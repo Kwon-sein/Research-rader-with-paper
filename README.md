@@ -52,3 +52,4 @@ data/research_topics.json
   "url": "https://..."
 }
 ```
+엡뎃 완!
