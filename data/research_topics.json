@@ -1,0 +1,1129 @@
+{
+  "updated": "2026-07-16",
+  "edition": "2026년 7월 · 논문 레이더판",
+  "profile": {
+    "name": "개인화 기준",
+    "description": "DBMS 튜닝·벡터 검색·실험 시스템 경험을 보유한 연구자가 새로운 주제를 탐색한다는 기준으로 평가했습니다.",
+    "legend": {
+      "hotness": "최근 학회·워크숍·산업 시스템에서의 등장 빈도와 성장성",
+      "fit": "현재 경험을 활용해 비교적 빠르게 연구를 시작할 수 있는 정도",
+      "novelty": "현재 연구와 얼마나 다른 사고방식과 기술을 요구하는지",
+      "difficulty": "프로토타입, 데이터, 컴퓨팅, 평가까지 포함한 진입 난이도",
+      "paperability": "명확한 문제·baseline·metric을 구성해 논문화하기 쉬운 정도"
+    }
+  },
+  "monthlyBrief": {
+    "headline": "AI가 데이터 시스템의 사용자를 넘어 실행 주체가 되기 시작했다",
+    "summary": "이번 달의 공통 신호는 LLM을 단순히 DB 앞단에 붙이는 것을 넘어, agent workflow·semantic operator·retrieval·inference runtime을 하나의 데이터 시스템 문제로 재정의하려는 움직임입니다. 동시에 benchmark 오류, workflow correctness, 비용 예측처럼 'AI가 틀리고 실패한다'는 전제를 시스템에 넣는 연구가 강해지고 있습니다.",
+    "signals": [
+      {
+        "title": "Agentic data processing이 독립 연구 축으로 정착",
+        "detail": "SIGMOD 2026은 LLM & Agentic Data Processing을 독립 세션으로 편성했고, CIDR 2026에서는 자율 data agent 협업과 agent data-flow control을 다뤘습니다.",
+        "tag": "DB + Agent"
+      },
+      {
+        "title": "Semantic query의 핵심은 모델보다 optimizer",
+        "detail": "LLM predicate, vector retrieval, structured filter를 함께 실행하면서 비용·정확도·지연시간을 최적화하는 문제가 점점 명확해지고 있습니다.",
+        "tag": "추천"
+      },
+      {
+        "title": "Agent memory가 단순 vector store를 벗어남",
+        "detail": "ICLR 2026의 agent memory·lifelong agent 흐름은 기억의 저장뿐 아니라 갱신, 망각, 충돌, 평가를 연구 문제로 다룹니다.",
+        "tag": "AI"
+      },
+      {
+        "title": "Benchmark 자체의 신뢰성이 연구 대상",
+        "detail": "CIDR 2026의 Text-to-SQL benchmark 분석은 annotation 오류가 시스템 순위를 크게 바꿀 수 있음을 보여주며, data-centric evaluation의 중요성을 강조합니다.",
+        "tag": "Evaluation"
+      },
+      {
+        "title": "추론 비용이 시스템 연구의 중심으로 이동",
+        "detail": "MLSys 2026은 LLM serving, agentic AI, 대규모 RL, storage와 compiler/runtime을 주요 범위로 명시하고 있습니다.",
+        "tag": "ML Systems"
+      }
+    ]
+  },
+  "topics": [
+    {
+      "id": "semantic-query-optimization",
+      "title": "Semantic Query Optimization",
+      "subtitle": "SQL·vector search·LLM predicate를 하나의 실행 계획으로 최적화",
+      "cluster": "Data + AI",
+      "domains": [
+        "Database",
+        "LLM",
+        "Systems"
+      ],
+      "status": "가장 추천",
+      "scores": {
+        "hotness": 5,
+        "fit": 5,
+        "novelty": 3,
+        "difficulty": 3,
+        "paperability": 5
+      },
+      "oneLine": "비싼 AI 연산을 언제, 어떤 모델로, 몇 건에 실행할지를 DB optimizer가 결정하는 연구입니다.",
+      "whyNow": "정형 조건, embedding retrieval, LLM 판단이 한 질의 안에 섞이면서 기존 cost model과 relational algebra만으로는 실행 비용과 정확도를 설명하기 어려워졌습니다.",
+      "researchQuestions": [
+        "LLM predicate의 selectivity·latency·accuracy를 적은 probe로 예측할 수 있는가?",
+        "작은 모델, 큰 모델, cache, sampling을 어떤 순서로 배치해야 하는가?",
+        "사용자의 정확도 제약을 만족하면서 금액·latency를 최소화할 수 있는가?",
+        "동일 semantic expression의 중간 결과를 안전하게 재사용할 수 있는가?"
+      ],
+      "starter": "DuckDB 또는 PostgreSQL 위에 semantic predicate 2~3개를 구현하고, 고정 순서·cost-based 순서·adaptive cascade를 비교합니다. 데이터 10만 건과 공개 LLM/VLM API 또는 로컬 모델로도 첫 결과를 만들 수 있습니다.",
+      "risk": "모델 정확도 평가가 흔들리면 시스템 기여가 약해질 수 있으므로, 명확한 accuracy constraint와 반복 가능한 workload가 필요합니다.",
+      "signals": [
+        "SIGMOD 2026 LLM & Agentic Data Processing",
+        "SIGMOD 2026 LLM and Vector Retrieval",
+        "SemWeave semantic common expressions demo"
+      ],
+      "keywords": [
+        "semantic operator",
+        "LLM predicate",
+        "cost model",
+        "cascade",
+        "approximate query processing"
+      ],
+      "sources": [
+        {
+          "label": "SIGMOD 2026 detailed program",
+          "url": "https://2026.sigmod.org/sigmod_program_detailed.shtml"
+        },
+        {
+          "label": "SIGMOD 2026 accepted papers",
+          "url": "https://2026.sigmod.org/sigmod_papers.shtml"
+        },
+        {
+          "label": "SemWeave demo",
+          "url": "https://2026.sigmod.org/sigmod_demos.shtml"
+        }
+      ],
+      "papers": [
+        {
+          "title": "Cut Costs, Not Accuracy: LLM-Powered Data Processing with Guarantees",
+          "venue": "SIGMOD 2026",
+          "date": "2026-06",
+          "type": "Research Paper",
+          "summary": "비싼 LLM 기반 데이터 연산을 그대로 전부 실행하지 않고도 정확도 보장을 유지하면서 비용을 줄이는 데이터 처리 방법을 다룹니다.",
+          "relevance": "Semantic predicate의 비용·정확도 trade-off를 optimizer가 어떻게 다뤄야 하는지 가장 직접적으로 보여주는 논문입니다.",
+          "url": "https://dl.acm.org/doi/10.1145/3769776"
+        },
+        {
+          "title": "Query Optimization for Database-Returning Queries",
+          "venue": "SIGMOD 2026",
+          "date": "2026-06",
+          "type": "Research Paper",
+          "summary": "질의 결과가 단순 tuple이 아니라 새로운 데이터베이스나 중간 데이터 구조가 되는 상황을 위한 최적화 문제를 제시합니다.",
+          "relevance": "LLM·agent가 후속 작업에 사용할 데이터 결과를 만드는 질의를 전통적 optimizer 밖으로 확장하는 관점을 제공합니다.",
+          "url": "https://dl.acm.org/doi/10.1145/3769818"
+        },
+        {
+          "title": "Deep Research is the New Analytics System: Towards Building the Runtime for AI-Driven Analytics",
+          "venue": "CIDR 2026",
+          "date": "2026-01",
+          "type": "Vision Paper",
+          "summary": "Deep Research를 여러 데이터 탐색·추론 단계를 수행하는 새로운 분석 workload로 보고 이를 지원할 runtime을 논의합니다.",
+          "relevance": "Semantic query optimizer를 단일 SQL 최적화가 아닌 장시간 AI 분석 pipeline 최적화로 확장할 때 유용합니다.",
+          "url": "https://www.cidrdb.org/cidr2026/papers/p30-russo.pdf"
+        }
+      ]
+    },
+    {
+      "id": "agent-memory",
+      "title": "Agent Memory Systems",
+      "subtitle": "기억의 저장·검색·갱신·망각을 위한 stateful AI infrastructure",
+      "cluster": "Agents",
+      "domains": [
+        "AI",
+        "Database",
+        "LLM"
+      ],
+      "status": "유망",
+      "scores": {
+        "hotness": 5,
+        "fit": 4,
+        "novelty": 4,
+        "difficulty": 4,
+        "paperability": 4
+      },
+      "oneLine": "Agent가 장기간 상호작용하면서 어떤 기억을 남기고, 합치고, 버릴지 결정하는 시스템 연구입니다.",
+      "whyNow": "현재 agent memory는 vector store와 긴 context에 의존하지만, 오래된 정보와 최신 정보의 충돌, 잘못된 기억의 전파, 비용 증가를 제대로 다루지 못합니다.",
+      "researchQuestions": [
+        "기억의 중요도와 유효기간을 어떻게 추정할 것인가?",
+        "서로 모순되는 기억을 transaction 또는 version 관점에서 관리할 수 있는가?",
+        "episodic·semantic·procedural memory를 서로 다른 index로 관리해야 하는가?",
+        "memory policy를 end-task 성능뿐 아니라 비용·안정성으로 평가할 수 있는가?"
+      ],
+      "starter": "기존 agent benchmark에 versioned memory store를 붙이고 FIFO, vector similarity, importance decay, conflict-aware retrieval을 비교합니다. DB의 MVCC나 cache replacement 관점을 적용하기 좋습니다.",
+      "risk": "Agent benchmark가 빠르게 바뀌고 end-task variance가 커서, 독립적인 memory quality metric이 필요합니다.",
+      "signals": [
+        "ICLR 2026 MemAgent workshop",
+        "ICLR 2026 Lifelong Agents workshop",
+        "Agent Data Protocol"
+      ],
+      "keywords": [
+        "long-term memory",
+        "stateful agents",
+        "forgetting",
+        "memory evaluation",
+        "versioned memory"
+      ],
+      "sources": [
+        {
+          "label": "ICLR 2026 MemAgent",
+          "url": "https://openreview.net/group?id=ICLR.cc%2F2026%2FWorkshop%2FMemAgent"
+        },
+        {
+          "label": "ICLR 2026 Lifelong Agents",
+          "url": "https://openreview.net/group?id=ICLR.cc%2F2026%2FWorkshop%2FLLA"
+        },
+        {
+          "label": "Agent Data Protocol",
+          "url": "https://openreview.net/forum?id=tG6301ORHd"
+        }
+      ],
+      "papers": [
+        {
+          "title": "Agent Data Protocol: Unifying Datasets for Diverse, Effective Agent Training",
+          "venue": "ICLR 2026",
+          "date": "2026-04",
+          "type": "Conference Paper",
+          "summary": "서로 다른 agent trajectory 데이터셋을 공통 표현으로 변환해 학습과 재사용을 쉽게 만드는 데이터 프로토콜을 제안합니다.",
+          "relevance": "Agent memory를 단순 vector store가 아니라 trajectory·관찰·행동을 재사용 가능한 데이터 자산으로 보는 기반이 됩니다.",
+          "url": "https://openreview.net/forum?id=tG6301ORHd"
+        },
+        {
+          "title": "Please Don't Kill My Vibe: Empowering Agents with Data Flow Control",
+          "venue": "CIDR 2026",
+          "date": "2026-01",
+          "type": "Vision Paper",
+          "summary": "Agent가 접근하고 전달하는 데이터의 흐름을 명시적으로 제어해야 한다는 데이터 시스템 관점을 제안합니다.",
+          "relevance": "무엇을 기억하고, 어떤 단계에 전달하며, 언제 폐기할지를 memory policy로 설계하는 문제와 직접 연결됩니다.",
+          "url": "https://www.cidrdb.org/cidr2026/papers/p10-summers.pdf"
+        },
+        {
+          "title": "Making Prompts First-Class Citizens for Adaptive LLM Pipelines",
+          "venue": "CIDR 2026",
+          "date": "2026-01",
+          "type": "Vision Paper",
+          "summary": "Prompt를 단순 문자열이 아니라 버전·실행·최적화가 가능한 시스템 객체로 취급하는 방향을 제시합니다.",
+          "relevance": "Agent memory에 저장되는 지식뿐 아니라 prompt와 context 자체의 lifecycle을 관리하는 연구로 확장할 수 있습니다.",
+          "url": "https://www.cidrdb.org/cidr2026/papers/p26-cetintemel.pdf"
+        }
+      ]
+    },
+    {
+      "id": "reliable-agent-workflows",
+      "title": "Reliable Agent Workflows",
+      "subtitle": "여러 도구와 데이터 소스를 넘나드는 agent 실행의 consistency와 recovery",
+      "cluster": "Agents",
+      "domains": [
+        "Database",
+        "Agents",
+        "Systems"
+      ],
+      "status": "장기 주제",
+      "scores": {
+        "hotness": 5,
+        "fit": 4,
+        "novelty": 4,
+        "difficulty": 5,
+        "paperability": 4
+      },
+      "oneLine": "Agent가 DB, API, queue, 파일을 순차적으로 수정할 때 실패해도 결과를 신뢰할 수 있게 만드는 runtime입니다.",
+      "whyNow": "Agent workflow는 수분에서 수시간 동안 실행되고 외부 side effect를 만들기 때문에, 기존 단일 DB transaction과 단순 retry로는 correctness를 보장하기 어렵습니다.",
+      "researchQuestions": [
+        "Agent step을 deterministic하게 replay할 수 있는가?",
+        "외부 API 호출을 포함한 workflow에 어떤 atomicity가 현실적인가?",
+        "checkpoint, compensation, idempotence를 자동 생성할 수 있는가?",
+        "LLM의 비결정성을 포함한 provenance를 어떻게 기록할 것인가?"
+      ],
+      "starter": "3개 도구를 사용하는 문서 처리 agent를 만들고 failure injection을 수행합니다. 단순 retry, checkpoint, saga-style compensation의 correctness와 비용을 비교합니다.",
+      "risk": "문제 범위가 매우 커지기 쉬우므로 처음에는 하나의 failure model과 하나의 correctness property로 좁혀야 합니다.",
+      "signals": [
+        "CIDR 2026 AC/DC workflow correctness",
+        "CIDR 2026 Agents with Data Flow Control",
+        "Autonomous Data Agent Collaboration"
+      ],
+      "keywords": [
+        "durable execution",
+        "workflow transaction",
+        "saga",
+        "provenance",
+        "replay"
+      ],
+      "sources": [
+        {
+          "label": "CIDR 2026 program",
+          "url": "https://www.cidrdb.org/cidr2026/program.html"
+        },
+        {
+          "label": "Consistency and Correctness in Data-Oriented Workflow",
+          "url": "https://www.cidrdb.org/cidr2026/papers/p9-stonebraker.pdf"
+        },
+        {
+          "label": "Autonomous Data Agent Collaboration",
+          "url": "https://www.cidrdb.org/cidr2026/papers/p19-eckmann.pdf"
+        }
+      ],
+      "papers": [
+        {
+          "title": "Consistency and Correctness in Data-Oriented Workflow Systems",
+          "venue": "CIDR 2026",
+          "date": "2026-01",
+          "type": "Research/Vision Paper",
+          "summary": "장시간 workflow의 실패 복구와 compensation을 넘어 전체 실행에 atomicity·consistency·correctness를 제공해야 한다고 주장합니다.",
+          "relevance": "DB·외부 API·LLM tool call을 넘나드는 agent workflow의 transaction semantics를 연구할 때 핵심 출발점입니다.",
+          "url": "https://www.cidrdb.org/cidr2026/papers/p9-stonebraker.pdf"
+        },
+        {
+          "title": "AgenticScholar: Agentic Data Management with Pipeline Orchestration for Scholarly Corpora",
+          "venue": "SIGMOD 2026",
+          "date": "2026-06",
+          "type": "Research Paper",
+          "summary": "학술 corpus를 대상으로 여러 agentic data processing 단계를 orchestration하는 시스템을 제시합니다.",
+          "relevance": "실제 agent pipeline에서 실행 순서, 중간 결과, 재시도와 비용을 어떻게 시스템화하는지 살펴볼 수 있습니다.",
+          "url": "https://dl.acm.org/doi/10.1145/3802008"
+        },
+        {
+          "title": "Atomix: Timely, Transactional Tool Use for Reliable Agentic Workflows",
+          "venue": "ICLR 2026 Workshop",
+          "date": "2026-04",
+          "type": "Workshop Paper",
+          "summary": "Tool call을 transaction 경계 안에서 실행해 실패 시 안전하게 재시도하고 side effect를 통제하는 방식을 다룹니다.",
+          "relevance": "Agent action의 exactly-once·rollback·authorization을 구현하는 구체적인 연구 사례입니다.",
+          "url": "https://openreview.net/forum?id=gele0qdZXT"
+        }
+      ]
+    },
+    {
+      "id": "llm-inference-systems",
+      "title": "LLM Inference & KV-Cache Systems",
+      "subtitle": "긴 context와 agent workflow를 위한 serving·memory·scheduling",
+      "cluster": "ML Systems",
+      "domains": [
+        "ML Systems",
+        "Systems",
+        "LLM"
+      ],
+      "status": "시스템 도전",
+      "scores": {
+        "hotness": 5,
+        "fit": 3,
+        "novelty": 5,
+        "difficulty": 5,
+        "paperability": 4
+      },
+      "oneLine": "GPU 계산만이 아니라 KV cache, prefix reuse, memory tiering, request scheduling을 최적화하는 분야입니다.",
+      "whyNow": "Agent는 여러 번의 긴 호출과 공유 prefix를 만들며, inference 비용에서 memory와 data movement의 비중이 커지고 있습니다.",
+      "researchQuestions": [
+        "Agent workflow의 미래 호출을 예측해 KV cache를 미리 배치할 수 있는가?",
+        "GPU·CPU·SSD 사이의 cache tiering을 workload-aware하게 제어할 수 있는가?",
+        "여러 tenant의 latency SLO와 throughput을 함께 만족할 수 있는가?",
+        "Retrieval 결과와 KV cache를 공동 최적화할 수 있는가?"
+      ],
+      "starter": "vLLM 계열 serving 환경에서 prefix sharing workload를 구성하고 LRU, size-aware, workflow-aware eviction을 비교합니다. GPU가 부족하면 trace-driven simulator부터 시작할 수 있습니다.",
+      "risk": "강한 baseline과 GPU 자원이 필요하며, 단순 heuristic 향상으로는 top-tier novelty를 확보하기 어렵습니다.",
+      "signals": [
+        "SIGMOD 2026 KVDrive",
+        "SIGMOD 2026 HotPrefix",
+        "MLSys 2026 efficient inference and serving"
+      ],
+      "keywords": [
+        "KV cache",
+        "LLM serving",
+        "prefix caching",
+        "memory tiering",
+        "scheduling"
+      ],
+      "sources": [
+        {
+          "label": "SIGMOD 2026 accepted papers",
+          "url": "https://2026.sigmod.org/sigmod_papers.shtml"
+        },
+        {
+          "label": "SIGMOD 2026 poster sessions",
+          "url": "https://2026.sigmod.org/sigmod-pods_poster_session.shtml"
+        },
+        {
+          "label": "MLSys 2026 CFP",
+          "url": "https://mlsys.org/Conferences/2026/CallForResearchPapers"
+        }
+      ],
+      "papers": [
+        {
+          "title": "Efficient LLM Serving for Agentic Workflows: A Data Systems Perspective",
+          "venue": "SIGMOD 2026",
+          "date": "2026-06",
+          "type": "Research Paper",
+          "summary": "짧은 단일 요청이 아니라 dependency가 있는 agent workflow를 대상으로 LLM serving을 데이터 시스템 관점에서 최적화합니다.",
+          "relevance": "Agent 실행 특성을 반영한 batching·scheduling·cache reuse 문제를 파악하기 좋은 논문입니다.",
+          "url": "https://dl.acm.org/doi/10.1145/3802046"
+        },
+        {
+          "title": "Beluga: A CXL-Based Memory Architecture for Scalable and Efficient LLM KVCache Management",
+          "venue": "SIGMOD 2026",
+          "date": "2026-06",
+          "type": "Research Paper",
+          "summary": "CXL 기반 메모리 구조를 이용해 대규모 LLM의 KV cache 용량과 이동 비용을 관리합니다.",
+          "relevance": "KV cache를 단순 GPU 메모리 문제가 아니라 계층형 저장·배치·자원 관리 문제로 볼 수 있게 합니다.",
+          "url": "https://dl.acm.org/doi/10.1145/3786627"
+        },
+        {
+          "title": "KVDrive: A Holistic Multi-Tier KV Cache Management System for Long-Context LLM Inference",
+          "venue": "SIGMOD 2026",
+          "date": "2026-06",
+          "type": "Research Paper",
+          "summary": "Long-context inference를 위해 여러 저장 계층에 걸친 KV cache 배치와 이동을 통합적으로 관리합니다.",
+          "relevance": "DB buffer manager와 유사한 문제를 LLM context serving에 적용하는 대표적인 교차 연구입니다.",
+          "url": "https://dl.acm.org/doi/10.1145/3802077"
+        }
+      ]
+    },
+    {
+      "id": "retrieval-beyond-ann",
+      "title": "Retrieval Beyond ANN",
+      "subtitle": "Filtered·multi-vector·model migration·hybrid retrieval의 lifecycle 문제",
+      "cluster": "Retrieval",
+      "domains": [
+        "Database",
+        "Retrieval",
+        "AI"
+      ],
+      "status": "안전한 확장",
+      "scores": {
+        "hotness": 5,
+        "fit": 5,
+        "novelty": 2,
+        "difficulty": 3,
+        "paperability": 4
+      },
+      "oneLine": "ANN 알고리즘 자체보다 실제 retrieval system의 filter, update, embedding version, 여러 index 간 조합을 다룹니다.",
+      "whyNow": "서비스에서는 embedding model과 corpus가 계속 바뀌고 metadata filter가 결합되기 때문에, 정적인 단일-vector benchmark만으로는 실제 병목을 설명하기 어렵습니다.",
+      "researchQuestions": [
+        "Embedding model 교체 중 두 공간을 동시에 검색하는 최적 전략은 무엇인가?",
+        "Filter selectivity와 query hardness를 함께 반영한 adaptive plan이 가능한가?",
+        "Multi-vector document 검색의 중복 연산을 줄일 수 있는가?",
+        "검색 품질 drift를 온라인으로 감지하고 index를 재구성할 시점을 결정할 수 있는가?"
+      ],
+      "starter": "두 embedding model과 metadata filter를 가진 corpus를 만들고 dual-index, mapping, partial re-embedding을 비교합니다. 현재 경험을 가장 직접적으로 활용할 수 있습니다.",
+      "risk": "현재 연구와 너무 가까워 새로움에 대한 만족감이 낮을 수 있으므로, tuning이 아닌 lifecycle 또는 correctness 문제로 이동해야 합니다.",
+      "signals": [
+        "SIGMOD 2026 Vector and Nearest Neighbor Search",
+        "Vector database warm-up open problems",
+        "Embedding-space interoperability"
+      ],
+      "keywords": [
+        "embedding migration",
+        "filtered ANN",
+        "multi-vector",
+        "hybrid retrieval",
+        "drift"
+      ],
+      "sources": [
+        {
+          "label": "SIGMOD 2026 program overview",
+          "url": "https://2026.sigmod.org/sigmod_program_overview.shtml"
+        },
+        {
+          "label": "SIGMOD 2026 vector DB warm-up",
+          "url": "https://2026.sigmod.org/warmup.shtml"
+        },
+        {
+          "label": "SIGMOD 2026 accepted papers",
+          "url": "https://2026.sigmod.org/sigmod_papers.shtml"
+        }
+      ],
+      "papers": [
+        {
+          "title": "Distribution-Aware Exploration for Adaptive HNSW Search",
+          "venue": "SIGMOD 2026",
+          "date": "2026-06",
+          "type": "Research Paper",
+          "summary": "질의와 데이터 분포를 고려해 HNSW 탐색량을 적응적으로 조절하는 방법을 제안합니다.",
+          "relevance": "고정 search parameter를 넘어 query별 difficulty와 distribution에 맞춘 search planning을 다룹니다.",
+          "url": "https://dl.acm.org/doi/10.1145/3786639"
+        },
+        {
+          "title": "PathSeer: Adaptive Neighbor Handling for Efficient Filtered ANN Search",
+          "venue": "SIGMOD 2026",
+          "date": "2026-06",
+          "type": "Research Paper",
+          "summary": "필터 조건 때문에 그래프 탐색이 단절되는 filtered ANN 상황에서 이웃 처리 전략을 적응적으로 선택합니다.",
+          "relevance": "Vector search와 structured predicate를 통합 최적화하는 대표적인 시스템 문제입니다.",
+          "url": "https://dl.acm.org/doi/10.1145/3802098"
+        },
+        {
+          "title": "Dynamically Detect and Fix Hardness for Efficient Approximate Nearest Neighbor Search",
+          "venue": "SIGMOD 2026",
+          "date": "2026-06",
+          "type": "Research Paper",
+          "summary": "ANN 질의의 어려움을 동적으로 감지하고 검색 과정에서 이를 보정하는 접근을 제안합니다.",
+          "relevance": "네가 진행한 query-aware hardness 연구와 가장 가까운 최신 후속 흐름으로 비교하기 좋습니다.",
+          "url": "https://dl.acm.org/doi/10.1145/3769783"
+        }
+      ]
+    },
+    {
+      "id": "llm-db-testing",
+      "title": "LLM-Assisted DBMS Testing",
+      "subtitle": "복잡한 query와 oracle을 생성하되 false positive를 통제",
+      "cluster": "Reliability",
+      "domains": [
+        "Database",
+        "LLM",
+        "Testing"
+      ],
+      "status": "빠른 시작",
+      "scores": {
+        "hotness": 4,
+        "fit": 5,
+        "novelty": 3,
+        "difficulty": 3,
+        "paperability": 5
+      },
+      "oneLine": "LLM의 생성 능력을 DB bug 탐색에 사용하면서 결과의 동치성과 oracle 신뢰성을 검증하는 연구입니다.",
+      "whyNow": "LLM은 복잡한 SQL과 schema를 쉽게 만들지만 잘못된 정답도 자신 있게 생성합니다. 생성 능력과 formal·differential verification의 결합이 핵심입니다.",
+      "researchQuestions": [
+        "실행 결과가 같은 equivalent query를 더 다양하게 생성할 수 있는가?",
+        "LLM이 만든 oracle을 symbolic rule이나 여러 DBMS로 검증할 수 있는가?",
+        "과거 bug report에서 재현 가능한 최소 query를 생성할 수 있는가?",
+        "Optimizer rule coverage를 목표로 query generation을 유도할 수 있는가?"
+      ],
+      "starter": "PostgreSQL·DuckDB·SQLite를 대상으로 동일 query의 변형을 생성하고 differential testing을 수행합니다. 발견 bug, invalid query 비율, coverage를 기존 도구와 비교합니다.",
+      "risk": "새 bug를 실제로 발견하지 못하면 결과가 약해질 수 있어, 공개 bug corpus와 mutation coverage를 보조 평가로 준비해야 합니다.",
+      "signals": [
+        "SIGMOD 2026 DB testing sessions",
+        "LLM-generated test oracle",
+        "Bug-report reproduction"
+      ],
+      "keywords": [
+        "differential testing",
+        "metamorphic testing",
+        "test oracle",
+        "SQL generation",
+        "bug reproduction"
+      ],
+      "sources": [
+        {
+          "label": "SIGMOD 2026 detailed program",
+          "url": "https://2026.sigmod.org/sigmod_program_detailed.shtml"
+        },
+        {
+          "label": "SIGMOD 2026 accepted papers",
+          "url": "https://2026.sigmod.org/sigmod_papers.shtml"
+        }
+      ],
+      "papers": [
+        {
+          "title": "Automated Discovery of Test Oracles for Database Management Systems Using LLMs",
+          "venue": "SIGMOD 2026",
+          "date": "2026-06",
+          "type": "Research Paper",
+          "summary": "DBMS testing에서 가장 어려운 correct answer 판정 문제를 LLM을 활용해 자동으로 발견하는 방법을 제안합니다.",
+          "relevance": "LLM을 단순 query generator가 아니라 test oracle 탐색기로 사용하는 최신 방향을 보여줍니다.",
+          "url": "https://dl.acm.org/doi/10.1145/3802017"
+        },
+        {
+          "title": "Test Data Generation for Complex SQL Queries",
+          "venue": "SIGMOD 2026",
+          "date": "2026-06",
+          "type": "Research Paper",
+          "summary": "복잡한 SQL query의 특정 실행 경로와 의미를 검증할 수 있도록 test database를 생성합니다.",
+          "relevance": "Query 생성뿐 아니라 오류를 드러낼 데이터 상태까지 함께 만드는 testing pipeline 설계에 도움이 됩니다.",
+          "url": "https://dl.acm.org/doi/10.1145/3769832"
+        },
+        {
+          "title": "SQLBarber: A System Leveraging Large Language Models to Generate Customized and Realistic SQL Workloads",
+          "venue": "SIGMOD 2026",
+          "date": "2026-06",
+          "type": "Research Paper",
+          "summary": "사용 목적과 특성에 맞는 현실적인 SQL workload를 LLM으로 생성하는 시스템을 제시합니다.",
+          "relevance": "Bug testing과 benchmark 생성에서 workload realism을 높이는 방향으로 연결할 수 있습니다.",
+          "url": "https://dl.acm.org/doi/10.1145/3786699"
+        }
+      ]
+    },
+    {
+      "id": "benchmark-reliability",
+      "title": "Data-Centric AI & Benchmark Reliability",
+      "subtitle": "모델보다 dataset·annotation·evaluation pipeline의 오류를 연구",
+      "cluster": "Evaluation",
+      "domains": [
+        "AI",
+        "Data",
+        "Evaluation"
+      ],
+      "status": "의외로 추천",
+      "scores": {
+        "hotness": 4,
+        "fit": 4,
+        "novelty": 4,
+        "difficulty": 2,
+        "paperability": 4
+      },
+      "oneLine": "최신 모델 순위가 실제 성능을 반영하는지, 데이터와 평가 기준부터 검증하는 연구입니다.",
+      "whyNow": "모델 성능 차이는 작아지는 반면 benchmark contamination, annotation error, ambiguous task가 순위를 크게 바꾸고 있습니다.",
+      "researchQuestions": [
+        "Benchmark의 오류를 자동으로 찾고 수정 우선순위를 정할 수 있는가?",
+        "평가 query의 난이도와 구별력을 계량화할 수 있는가?",
+        "모델 순위가 dataset slice마다 얼마나 불안정한가?",
+        "Human review 비용을 최소화하는 active benchmark curation이 가능한가?"
+      ],
+      "starter": "공개 Text-to-SQL, RAG 또는 agent benchmark 하나를 선택해 200개 샘플을 재검증하고 오류 taxonomy와 ranking sensitivity를 분석합니다.",
+      "risk": "분석 논문으로 보일 수 있으므로 자동 검증 도구나 새로운 benchmark curation method까지 이어지는 것이 좋습니다.",
+      "signals": [
+        "CIDR 2026 Text-to-SQL Benchmarks are Broken",
+        "Human-in-the-loop benchmark curation",
+        "Data preparation synthesis"
+      ],
+      "keywords": [
+        "benchmark audit",
+        "annotation error",
+        "data quality",
+        "evaluation leakage",
+        "active curation"
+      ],
+      "sources": [
+        {
+          "label": "Text-to-SQL Benchmarks are Broken",
+          "url": "https://www.cidrdb.org/cidr2026/papers/p5-jin.pdf"
+        },
+        {
+          "label": "CIDR 2026 program",
+          "url": "https://www.cidrdb.org/cidr2026/program.html"
+        }
+      ],
+      "papers": [
+        {
+          "title": "Text-to-SQL Benchmarks are Broken: An In-Depth Analysis of Annotation Errors",
+          "venue": "CIDR 2026",
+          "date": "2026-01",
+          "type": "Analysis Paper",
+          "summary": "널리 사용되는 text-to-SQL benchmark의 annotation error를 분석해 leaderboard가 실제 성능을 왜곡할 수 있음을 보여줍니다.",
+          "relevance": "새 모델보다 benchmark의 정확성·누출·평가 단위를 먼저 검증하는 data-centric 연구의 좋은 예입니다.",
+          "url": "https://www.cidrdb.org/cidr2026/papers/p5-jin.pdf"
+        },
+        {
+          "title": "BenchPress: A Human-in-the-Loop Annotation System for Rapid Text-to-SQL Benchmark Curation",
+          "venue": "CIDR 2026",
+          "date": "2026-01",
+          "type": "Systems Paper",
+          "summary": "사람과 시스템이 협업해 text-to-SQL benchmark를 빠르게 구축하고 검수하는 도구를 제안합니다.",
+          "relevance": "Benchmark 오류를 찾는 것에서 나아가 지속적으로 고품질 평가셋을 유지하는 연구로 연결됩니다.",
+          "url": "https://www.cidrdb.org/cidr2026/papers/p16-wenz.pdf"
+        },
+        {
+          "title": "Survivorship Bias in Industrial Database Workloads",
+          "venue": "CIDR 2026",
+          "date": "2026-01",
+          "type": "Analysis Paper",
+          "summary": "공개된 산업 workload가 사용자 요구 전체가 아니라 기존 시스템에서 실행에 성공한 query만 반영할 수 있음을 분석합니다.",
+          "relevance": "실제 workload trace조차 편향될 수 있다는 점을 보여주며 benchmark 설계의 전제를 다시 생각하게 합니다.",
+          "url": "https://www.cidrdb.org/cidr2026/papers/p22-marcus.pdf"
+        }
+      ]
+    },
+    {
+      "id": "multimodal-agents",
+      "title": "Multimodal Agents & Orchestration",
+      "subtitle": "텍스트·이미지·영상·도구를 조합해 장기 작업을 수행하는 AI",
+      "cluster": "AI",
+      "domains": [
+        "AI",
+        "Multimodal",
+        "Agents"
+      ],
+      "status": "새로운 자극",
+      "scores": {
+        "hotness": 5,
+        "fit": 2,
+        "novelty": 5,
+        "difficulty": 4,
+        "paperability": 3
+      },
+      "oneLine": "하나의 거대 모델보다 여러 specialist model과 tool을 어떤 순서로 사용할지 학습하거나 계획합니다.",
+      "whyNow": "멀티모달 모델의 능력은 빠르게 좋아졌지만 긴 영상, 고해상도 이미지, tool use에서는 입력 비용과 잘못된 perception이 큰 병목입니다.",
+      "researchQuestions": [
+        "질문에 따라 image crop, OCR, vision model, web tool을 동적으로 선택할 수 있는가?",
+        "중간 visual evidence를 압축하면서 오류를 줄일 수 있는가?",
+        "여러 모델의 결과가 충돌할 때 confidence를 교정할 수 있는가?",
+        "Orchestration policy를 비용과 정확도 양쪽으로 학습할 수 있는가?"
+      ],
+      "starter": "문서·차트 질의에서 OCR, VLM, text LLM을 조합하는 routing baseline을 만들고 고정 pipeline과 adaptive routing을 비교합니다.",
+      "risk": "모델 발전 속도가 매우 빨라 시스템 아이디어가 강한 foundation model에 흡수될 위험이 있습니다.",
+      "signals": [
+        "ICLR 2026 Multimodal Intelligence workshop",
+        "Multimodal model orchestration",
+        "Multimodal reasoning benchmarks"
+      ],
+      "keywords": [
+        "multimodal routing",
+        "VLM",
+        "tool orchestration",
+        "visual reasoning",
+        "adaptive pipeline"
+      ],
+      "sources": [
+        {
+          "label": "ICLR 2026 Multimodal Intelligence",
+          "url": "https://openreview.net/group?id=ICLR.cc%2F2026%2FWorkshop%2FMM_Intelligence"
+        },
+        {
+          "label": "Multimodal LLM Orchestration",
+          "url": "https://openreview.net/forum?id=V2fTGbSD7Q"
+        },
+        {
+          "label": "SportR benchmark",
+          "url": "https://openreview.net/forum?id=cPCGB402ff"
+        }
+      ],
+      "papers": [
+        {
+          "title": "Training-Free Multimodal Large Language Model Orchestration",
+          "venue": "ICLR 2026",
+          "date": "2026-04",
+          "type": "Conference Paper",
+          "summary": "여러 multimodal model을 추가 학습 없이 조합해 입력과 task에 맞는 협업 구조를 만드는 방법을 다룹니다.",
+          "relevance": "한 개의 거대 모델 대신 여러 vision·language 도구를 동적으로 선택하고 orchestration하는 연구입니다.",
+          "url": "https://openreview.net/forum?id=V2fTGbSD7Q"
+        },
+        {
+          "title": "KathDB: Explainable Multimodal Database Management System with Human-AI Collaboration",
+          "venue": "CIDR 2026",
+          "date": "2026-01",
+          "type": "Systems Paper",
+          "summary": "서로 다른 형태의 데이터를 사람과 AI가 함께 탐색하고 설명할 수 있는 multimodal DBMS 방향을 제안합니다.",
+          "relevance": "Multimodal agent를 실제 데이터 관리 abstraction과 연결하는 시스템 관점을 제공합니다.",
+          "url": "https://www.cidrdb.org/cidr2026/papers/p14-xiao.pdf"
+        },
+        {
+          "title": "SportR: A Benchmark for Multimodal Large Language Model Reasoning in Sports",
+          "venue": "ICLR 2026",
+          "date": "2026-04",
+          "type": "Conference Paper",
+          "summary": "영상·시간·상황 이해가 동시에 필요한 스포츠 도메인에서 multimodal reasoning 능력을 평가합니다.",
+          "relevance": "Agent orchestration을 평가할 때 단순 VQA보다 긴 시간축과 전문 reasoning이 필요한 benchmark 사례입니다.",
+          "url": "https://openreview.net/forum?id=cPCGB402ff"
+        }
+      ]
+    },
+    {
+      "id": "agent-security",
+      "title": "Agent & Tool-Use Security",
+      "subtitle": "Prompt injection을 넘어 권한·데이터 흐름·side effect를 통제",
+      "cluster": "Security",
+      "domains": [
+        "Security",
+        "Agents",
+        "Systems"
+      ],
+      "status": "중요하지만 어려움",
+      "scores": {
+        "hotness": 5,
+        "fit": 2,
+        "novelty": 5,
+        "difficulty": 5,
+        "paperability": 4
+      },
+      "oneLine": "Agent가 이메일, DB, 코드 실행 도구를 사용할 때 공격 입력이 실제 권한과 행동으로 이어지는 것을 막습니다.",
+      "whyNow": "자연어 데이터와 명령의 경계가 흐려져, 문서 안의 악성 지시가 agent의 tool call과 데이터 접근으로 연결될 수 있습니다.",
+      "researchQuestions": [
+        "데이터와 명령을 runtime 수준에서 분리할 수 있는가?",
+        "각 tool call에 최소 권한과 information-flow policy를 적용할 수 있는가?",
+        "Multi-agent 환경에서 한 agent의 오염이 다른 agent로 전파되는가?",
+        "보안을 강화하면서 task completion을 얼마나 유지할 수 있는가?"
+      ],
+      "starter": "문서 요약·메일 전송 agent에 prompt injection corpus를 넣고 allowlist, taint tracking, policy checker를 비교합니다.",
+      "risk": "공격·방어가 빠르게 반복되고 threat model에 따라 결과가 크게 달라져, 명확한 보안 보장이 필요합니다.",
+      "signals": [
+        "ICLR 2026 Reliable Autonomy",
+        "Adversarial multi-agent prompting",
+        "MLSys privacy and security"
+      ],
+      "keywords": [
+        "prompt injection",
+        "tool security",
+        "information flow",
+        "least privilege",
+        "agent sandbox"
+      ],
+      "sources": [
+        {
+          "label": "ICLR 2026 Reliable Autonomy",
+          "url": "https://openreview.net/group?id=ICLR.cc%2F2026%2FWorkshop%2FReliable_Autonomy"
+        },
+        {
+          "label": "ICLR 2026 conference submissions",
+          "url": "https://openreview.net/group?id=ICLR.cc%2F2026%2FConference"
+        },
+        {
+          "label": "MLSys 2026 CFP",
+          "url": "https://mlsys.org/Conferences/2026/CallForResearchPapers"
+        }
+      ],
+      "papers": [
+        {
+          "title": "AgentSecBench: Measuring Prompt Injection, Privacy Leakage, and Tool-Use Integrity in LLM Agents",
+          "venue": "arXiv 2026",
+          "date": "2026-05",
+          "type": "Benchmark",
+          "summary": "Prompt injection, 정보 유출, 금지된 tool action을 공통 security framework로 평가하는 benchmark를 제안합니다.",
+          "relevance": "Agent security를 막연한 jailbreak가 아니라 data provenance와 capability integrity 문제로 정의합니다.",
+          "url": "https://arxiv.org/abs/2605.26269"
+        },
+        {
+          "title": "Reliable Weak-to-Strong Monitoring of LLM Agents",
+          "venue": "ICLR 2026",
+          "date": "2026-04",
+          "type": "Conference Paper",
+          "summary": "상대적으로 약한 monitor가 더 강한 agent의 위험 행동을 얼마나 신뢰성 있게 탐지할 수 있는지 평가합니다.",
+          "relevance": "실행 전후 agent action을 감시하는 monitoring layer와 평가 protocol을 설계할 때 참고할 수 있습니다.",
+          "url": "https://openreview.net/forum?id=WV7xIboTDK"
+        },
+        {
+          "title": "Atomix: Timely, Transactional Tool Use for Reliable Agentic Workflows",
+          "venue": "ICLR 2026 Workshop",
+          "date": "2026-04",
+          "type": "Workshop Paper",
+          "summary": "Agent tool call에 transaction과 policy gate를 적용해 side effect와 실패를 통제합니다.",
+          "relevance": "Security boundary를 prompt에만 맡기지 않고 실행 계층에서 강제하는 시스템 접근입니다.",
+          "url": "https://openreview.net/forum?id=gele0qdZXT"
+        }
+      ]
+    },
+    {
+      "id": "cloud-state-management",
+      "title": "Cloud-Native & Disaggregated State",
+      "subtitle": "compute와 storage가 분리된 환경의 cache·state·multi-tenancy",
+      "cluster": "Systems",
+      "domains": [
+        "Database",
+        "Cloud",
+        "Systems"
+      ],
+      "status": "정통 시스템",
+      "scores": {
+        "hotness": 4,
+        "fit": 3,
+        "novelty": 4,
+        "difficulty": 5,
+        "paperability": 4
+      },
+      "oneLine": "서버 한 대가 아니라 remote storage와 탄력적 compute를 전제로 DB와 streaming state를 재설계합니다.",
+      "whyNow": "클라우드 비용 구조와 serverless 실행은 local memory·disk를 당연하게 가정하던 기존 DB 설계를 흔들고 있습니다.",
+      "researchQuestions": [
+        "Remote state 접근을 줄이는 cache와 prefetch 정책은 무엇인가?",
+        "Tenant 간 cache pollution과 tail latency를 통제할 수 있는가?",
+        "Compute scale-out 시 state migration 비용을 최소화할 수 있는가?",
+        "Cost SLO를 query optimizer에 직접 넣을 수 있는가?"
+      ],
+      "starter": "Object storage 또는 remote KV를 backend로 둔 작은 analytical engine을 만들고 local cache 정책과 workload shift를 평가합니다.",
+      "risk": "분산 환경과 실제 cloud 비용이 필요해 구현·평가 부담이 큽니다.",
+      "signals": [
+        "CIDR 2026 cloud and disaggregated systems",
+        "SIGMOD cloud-native distributed databases",
+        "MLSys storage systems"
+      ],
+      "keywords": [
+        "disaggregation",
+        "serverless",
+        "remote memory",
+        "multi-tenancy",
+        "state management"
+      ],
+      "sources": [
+        {
+          "label": "CIDR 2026 accepted papers",
+          "url": "https://www.cidrdb.org/cidr2026/papers.html"
+        },
+        {
+          "label": "SIGMOD 2026 detailed program",
+          "url": "https://2026.sigmod.org/sigmod_program_detailed.shtml"
+        },
+        {
+          "label": "MLSys 2026 CFP",
+          "url": "https://mlsys.org/Conferences/2026/CallForResearchPapers"
+        }
+      ],
+      "papers": [
+        {
+          "title": "Declarative Memory Services",
+          "venue": "CIDR 2026",
+          "date": "2026-01",
+          "type": "Vision Paper",
+          "summary": "다양한 memory hardware와 remote memory를 애플리케이션이 일관된 선언형 interface로 사용할 수 있는 서비스 방향을 제안합니다.",
+          "relevance": "Disaggregated environment에서 state placement와 memory tiering을 자동화하는 연구의 큰 그림을 제공합니다.",
+          "url": "https://www.cidrdb.org/cidr2026/papers/p21-castrillon.pdf"
+        },
+        {
+          "title": "Data Movement-Aware GPU Sharing for Data-Intensive Systems",
+          "venue": "CIDR 2026",
+          "date": "2026-01",
+          "type": "Systems Paper",
+          "summary": "여러 data-intensive workload가 GPU를 공유할 때 연산뿐 아니라 데이터 이동 비용을 고려해야 함을 보여줍니다.",
+          "relevance": "Cloud state와 accelerator scheduling을 함께 최적화하는 cross-layer 문제로 확장할 수 있습니다.",
+          "url": "https://www.cidrdb.org/cidr2026/papers/p13-jiang.pdf"
+        },
+        {
+          "title": "O3-LSM: Maximizing Disaggregated LSM Write Performance via Three-Layer Offloading",
+          "venue": "SIGMOD 2026",
+          "date": "2026-06",
+          "type": "Research Paper",
+          "summary": "Disaggregated storage 환경에서 LSM write path를 여러 계층으로 offload해 성능을 높입니다.",
+          "relevance": "전통적 storage engine을 cloud-native compute·memory·storage 분리 환경에 맞춰 재설계한 사례입니다.",
+          "url": "https://dl.acm.org/doi/10.1145/3802093"
+        }
+      ]
+    },
+    {
+      "id": "data-formats",
+      "title": "Queryable Data Formats & Compression",
+      "subtitle": "파일 자체가 decoder·index·통계를 품는 portable data infrastructure",
+      "cluster": "Systems",
+      "domains": [
+        "Database",
+        "Storage",
+        "Systems"
+      ],
+      "status": "완전히 다른 맛",
+      "scores": {
+        "hotness": 4,
+        "fit": 2,
+        "novelty": 5,
+        "difficulty": 5,
+        "paperability": 4
+      },
+      "oneLine": "Parquet 이후의 workload를 위해 CPU·GPU·lakehouse·ML이 함께 읽을 수 있는 형식과 압축을 연구합니다.",
+      "whyNow": "하나의 데이터가 warehouse, streaming, training, vector retrieval에서 반복 사용되면서 변환과 decoding 비용이 커지고 있습니다.",
+      "researchQuestions": [
+        "압축을 풀지 않고 filter·aggregate·similarity 연산을 수행할 수 있는가?",
+        "데이터 파일에 versioned decoder를 포함하면 장기 호환성이 좋아지는가?",
+        "CPU와 GPU에 동시에 유리한 encoding을 선택할 수 있는가?",
+        "Workload 변화에 따라 file layout을 점진적으로 재작성할 수 있는가?"
+      ],
+      "starter": "한 가지 numeric 또는 embedding column을 대상으로 3개 encoding을 구현하고 scan, filter, decode, GPU transfer 비용을 분리 측정합니다.",
+      "risk": "낮은 수준 최적화 역량과 매우 강한 engineering이 필요하며 작은 개선은 설득력이 약합니다.",
+      "signals": [
+        "VLDB self-decoding datasets",
+        "SIGMOD open data format",
+        "Lossless floating-point compression"
+      ],
+      "keywords": [
+        "file format",
+        "compression",
+        "direct query",
+        "portable decoder",
+        "data layout"
+      ],
+      "sources": [
+        {
+          "label": "VLDB 2025 awards",
+          "url": "https://vldb.org/2025/?conference-awards="
+        },
+        {
+          "label": "SIGMOD 2026 accepted papers",
+          "url": "https://2026.sigmod.org/sigmod_papers.shtml"
+        }
+      ],
+      "papers": [
+        {
+          "title": "F3: The Open-Source Data File Format for the Future",
+          "venue": "SIGMOD 2026",
+          "date": "2026-06",
+          "type": "Research Paper",
+          "summary": "새로운 hardware와 workload에 대응하면서 확장 가능한 open-source data file format을 제안합니다.",
+          "relevance": "형식 설계 자체뿐 아니라 여러 실행 엔진과의 interoperability를 연구하는 최신 대표 사례입니다.",
+          "url": "https://dl.acm.org/doi/10.1145/3749163"
+        },
+        {
+          "title": "L3: A GPU-Native Co-Designed Data Format for Learned Lossless Lightweight Compression",
+          "venue": "SIGMOD 2026",
+          "date": "2026-06",
+          "type": "Research Paper",
+          "summary": "GPU 실행과 learned compression을 함께 고려해 저장 형식과 decoder를 공동 설계합니다.",
+          "relevance": "압축률만이 아니라 GPU에서의 decode·query 비용까지 포함하는 format 연구입니다.",
+          "url": "https://dl.acm.org/doi/10.1145/3802078"
+        },
+        {
+          "title": "AnyBlox: A Framework for Self-Decoding Datasets",
+          "venue": "VLDB 2025 Best Paper",
+          "date": "2025-09",
+          "type": "Research Paper",
+          "summary": "데이터와 함께 경량 decoder를 제공해 시스템이 새로운 encoding을 별도 구현 없이 읽도록 하는 abstraction을 제안합니다.",
+          "relevance": "Format 호환성 문제를 파일 규격 고정이 아니라 self-decoding이라는 새로운 abstraction으로 해결합니다.",
+          "url": "https://vldb.org/pvldb/volumes/18/paper/AnyBlox%3A%20A%20Framework%20for%20Self-Decoding%20Datasets"
+        }
+      ]
+    },
+    {
+      "id": "scientific-agents",
+      "title": "AI for Scientific Discovery",
+      "subtitle": "문헌·데이터·실험 도구를 연결하는 research agent",
+      "cluster": "AI",
+      "domains": [
+        "AI",
+        "Agents",
+        "Science"
+      ],
+      "status": "흥미 탐색용",
+      "scores": {
+        "hotness": 4,
+        "fit": 2,
+        "novelty": 5,
+        "difficulty": 4,
+        "paperability": 3
+      },
+      "oneLine": "과학 논문을 읽는 데서 끝나지 않고 가설 생성, 데이터 분석, 실험 계획과 검증을 연결합니다.",
+      "whyNow": "Agent의 tool use와 long-context 능력이 좋아지면서, domain-specific scientific workflow를 얼마나 신뢰성 있게 자동화할 수 있는지가 연구 대상이 되고 있습니다.",
+      "researchQuestions": [
+        "문헌 evidence와 모델의 추론을 명확히 분리할 수 있는가?",
+        "가설의 novelty와 falsifiability를 자동 평가할 수 있는가?",
+        "분석 코드·데이터·결과의 provenance를 유지할 수 있는가?",
+        "잘못된 가설을 빠르게 폐기하는 실험 선택 정책이 가능한가?"
+      ],
+      "starter": "한 좁은 분야의 공개 논문·데이터셋을 사용해 evidence-grounded hypothesis generation과 citation verification pipeline을 만듭니다.",
+      "risk": "도메인 전문가 평가가 필요하고, 실제 과학적 발견을 주장하기는 매우 어렵습니다.",
+      "signals": [
+        "ICLR 2026 scientific agent workshops",
+        "Materials Research Agent",
+        "Deep research workload"
+      ],
+      "keywords": [
+        "scientific agents",
+        "hypothesis generation",
+        "evidence grounding",
+        "experiment planning",
+        "provenance"
+      ],
+      "sources": [
+        {
+          "label": "Materials Research Agent",
+          "url": "https://openreview.net/forum?id=jAw4Xajcpd"
+        },
+        {
+          "label": "CIDR 2026 program",
+          "url": "https://www.cidrdb.org/cidr2026/program.html"
+        }
+      ],
+      "papers": [
+        {
+          "title": "Materials Research Agent",
+          "venue": "ICLR 2026 Workshop",
+          "date": "2026-04",
+          "type": "Workshop Paper",
+          "summary": "문헌 정보 추출, 물성 예측, 데이터 탐색 도구를 결합해 재료과학 연구를 지원하는 agent를 제시합니다.",
+          "relevance": "Scientific agent가 단순 대화형 assistant를 넘어 전문 도구와 uncertainty를 결합하는 구체적 사례입니다.",
+          "url": "https://openreview.net/forum?id=jAw4Xajcpd"
+        },
+        {
+          "title": "URSA: The Universal Research and Scientific Agent",
+          "venue": "ICLR 2026 Workshop",
+          "date": "2026-04",
+          "type": "Workshop Paper",
+          "summary": "과학적 조사와 분석 과정을 모듈형 도구로 수행하는 범용 research agent framework를 제안합니다.",
+          "relevance": "여러 과학 분야로 확장 가능한 agent architecture와 evaluation 문제를 살펴볼 수 있습니다.",
+          "url": "https://openreview.net/forum?id=NEkIDkMiwm"
+        },
+        {
+          "title": "SR-Scientist: Scientific Equation Discovery With Agentic AI",
+          "venue": "ICLR 2026",
+          "date": "2026-04",
+          "type": "Conference Paper",
+          "summary": "Agent가 후보 방정식을 생성하고 검증·수정하며 과학적 관계를 발견하도록 하는 framework를 제안합니다.",
+          "relevance": "Scientific discovery를 최종 답변 생성이 아니라 반복적 hypothesis–test loop로 모델링한 사례입니다.",
+          "url": "https://openreview.net/forum?id=KBN6oUx5uL"
+        }
+      ]
+    },
+    {
+      "id": "reasoning-efficiency",
+      "title": "Reasoning Efficiency & Test-Time Compute",
+      "subtitle": "더 오래 생각하는 모델을 비용 제약 아래에서 언제 멈출지 결정",
+      "cluster": "AI",
+      "domains": [
+        "AI",
+        "ML Systems",
+        "Optimization"
+      ],
+      "status": "AI 쪽 확장",
+      "scores": {
+        "hotness": 5,
+        "fit": 3,
+        "novelty": 5,
+        "difficulty": 4,
+        "paperability": 3
+      },
+      "oneLine": "모든 문제에 동일한 reasoning budget을 쓰지 않고, 난이도와 confidence에 따라 compute를 배분합니다.",
+      "whyNow": "Reasoning model은 추가 compute로 성능을 높일 수 있지만, 실제 서비스에서는 비용과 tail latency 때문에 adaptive stopping과 routing이 필요합니다.",
+      "researchQuestions": [
+        "문제 난이도를 답을 생성하기 전에 추정할 수 있는가?",
+        "Reasoning 중간 상태로 성공 가능성을 예측해 조기 종료할 수 있는가?",
+        "여러 모델과 여러 budget 사이의 routing을 학습할 수 있는가?",
+        "정확도·금액·latency를 포함한 Pareto policy를 만들 수 있는가?"
+      ],
+      "starter": "수학·코드·Text-to-SQL 문제에 여러 reasoning budget을 적용하고, cheap difficulty feature로 budget을 선택하는 policy를 학습합니다.",
+      "risk": "모델 API와 reasoning trace 정책 변화에 영향을 많이 받으며, 단순 routing은 경쟁이 매우 치열합니다.",
+      "signals": [
+        "MLSys 2026 large-scale RL for LLMs",
+        "Reasoning agents",
+        "Agent efficiency benchmarks"
+      ],
+      "keywords": [
+        "test-time compute",
+        "adaptive reasoning",
+        "early exit",
+        "model routing",
+        "budget allocation"
+      ],
+      "sources": [
+        {
+          "label": "MLSys 2026 CFP",
+          "url": "https://mlsys.org/Conferences/2026/CallForResearchPapers"
+        },
+        {
+          "label": "AgentRace",
+          "url": "https://openreview.net/pdf?id=eUuxWAQA5F"
+        },
+        {
+          "label": "Learning to Orchestrate Agents",
+          "url": "https://openreview.net/forum?id=U23A2BUKYt"
+        }
+      ],
+      "papers": [
+        {
+          "title": "AgentRace: Benchmarking Efficiency in LLM Agent Systems",
+          "venue": "ICLR 2026",
+          "date": "2026-04",
+          "type": "Conference Paper",
+          "summary": "Agent의 최종 정확도뿐 아니라 시간, token, model call과 같은 실행 비용을 체계적으로 평가하는 benchmark를 제안합니다.",
+          "relevance": "Test-time compute가 많을수록 좋다는 가정 대신 비용 대비 reasoning 성능을 측정하는 데 적합합니다.",
+          "url": "https://openreview.net/forum?id=eUuxWAQA5F"
+        },
+        {
+          "title": "Learning to Orchestrate Agents in Natural Language with the Conductor",
+          "venue": "ICLR 2026",
+          "date": "2026-04",
+          "type": "Conference Paper",
+          "summary": "작은 conductor model이 task 난이도에 따라 여러 전문 model을 선택하고 자연어 workflow를 구성하도록 학습합니다.",
+          "relevance": "고정된 reasoning budget이 아니라 문제별로 agent 수와 검증 단계를 동적으로 조절하는 test-time scaling 연구입니다.",
+          "url": "https://openreview.net/forum?id=U23A2BUKYt"
+        },
+        {
+          "title": "Efficient LLM Serving for Agentic Workflows: A Data Systems Perspective",
+          "venue": "SIGMOD 2026",
+          "date": "2026-06",
+          "type": "Research Paper",
+          "summary": "Agent workflow의 dependency와 반복 호출 특성을 이용해 LLM serving 비용과 지연을 줄이는 시스템 방향을 다룹니다.",
+          "relevance": "Reasoning algorithm의 효율성과 serving runtime의 효율성을 함께 보게 해주는 연결 논문입니다.",
+          "url": "https://dl.acm.org/doi/10.1145/3802046"
+        }
+      ]
+    }
+  ],
+  "paperGuide": {
+    "title": "관련 논문 표시 기준",
+    "description": "각 주제에는 최근 탑티어 학회·공식 proceedings·OpenReview·arXiv에서 확인한 논문 중, 주제의 변화를 이해하거나 첫 연구 문제를 구체화하는 데 도움이 되는 논문을 우선 배치합니다. 단순 키워드 일치보다 연구 문제와의 관련성을 중시합니다.",
+    "updateRule": "월간 업데이트에서는 새 논문을 추가하고, 중요도가 낮아진 논문은 대표 논문으로 남기거나 목록에서 교체합니다."
+  }
+}
