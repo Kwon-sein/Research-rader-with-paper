@@ -1,0 +1,15 @@
+{
+  "latest": "2026-08",
+  "months": [
+    {
+      "month": "2026-08",
+      "label_ko": "2026년 8월",
+      "file": "data/monthly/research_topics_2026_08.json"
+    },
+    {
+      "month": "2026-07",
+      "label_ko": "2026년 7월",
+      "file": "data/monthly/research_topics_2026_07.json"
+    }
+  ]
+}
