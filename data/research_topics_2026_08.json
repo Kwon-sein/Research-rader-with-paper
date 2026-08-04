@@ -1,491 +1,741 @@
 {
-  "metadata": {
-    "title": "Monthly Research Radar",
-    "month": "2026-08",
-    "coverage_period": "2026-07-01 to 2026-08-04",
-    "language": "ko",
-    "generated_at": "2026-08-04",
-    "description": "데이터베이스, 벡터 검색, AI/ML 시스템, 에이전트, LLM 서빙, PIM 및 인접 시스템 연구의 월간 탐색 주제.",
-    "score_scale": {
-      "hotness": "최근 연구 관심도. 1=낮음, 5=매우 높음",
-      "novelty_to_user": "사용자에게 새로운 정도. 1=익숙함, 5=매우 새로움",
-      "experience_fit": "기존 DBMS 튜닝·벡터 검색·실험 시스템 경험 활용도. 1=낮음, 5=매우 높음",
-      "entry_difficulty": "진입 난이도. 1=쉬움, 5=어려움",
-      "publication_potential": "연구 확장성과 논문화 가능성. 1=낮음, 5=매우 높음"
-    },
-    "primary_sources": [
+  "updated": "2026-08-04",
+  "edition": "2026년 8월 · 논문 레이더판",
+  "profile": {
+    "name": "개인화 기준",
+    "description": "DBMS 튜닝·벡터 검색·실험 시스템 경험을 보유한 연구자가 새로운 주제를 탐색한다는 기준으로 평가했습니다.",
+    "legend": {
+      "hotness": "최근 학회·워크숍·산업 시스템에서의 등장 빈도와 성장성",
+      "fit": "현재 경험을 활용해 비교적 빠르게 연구를 시작할 수 있는 정도",
+      "novelty": "현재 연구와 얼마나 다른 사고방식과 기술을 요구하는지",
+      "difficulty": "프로토타입, 데이터, 컴퓨팅, 평가까지 포함한 진입 난이도",
+      "paperability": "명확한 문제·baseline·metric을 구성해 논문화하기 쉬운 정도"
+    }
+  },
+  "paperGuide": {
+    "title": "2026년 8월 Research Radar",
+    "description": "이번 달은 filtered vector search, workload drift, agent workflow, AI query processing이 핵심 축입니다."
+  },
+  "monthlyBrief": {
+    "headline": "AI와 벡터 검색이 독립 기능에서 adaptive data pipeline으로 이동하고 있다",
+    "summary": "이번 달의 공통 신호는 필터·벡터 검색·AI inference·agent workflow를 각각 따로 최적화하는 대신, workload 변화와 비용·정확도 제약을 관찰해 전체 실행 전략을 적응적으로 선택하려는 움직임입니다. DB optimizer, automatic tuning, cache management, hardware offloading의 경계가 빠르게 겹치고 있습니다.",
+    "signals": [
       {
-        "name": "SIGMOD 2026 Accepted Papers",
-        "url": "https://2026.sigmod.org/sigmod_papers.shtml"
+        "title": "Filtered vector search가 DBMS optimizer 문제로 확장",
+        "detail": "필터 선택도와 벡터 공간 난이도에 따라 pre-filter, post-filter, graph search를 선택하는 실행 전략 연구가 중요해지고 있습니다.",
+        "tag": "Vector DB"
       },
       {
-        "name": "PACMMOD 2026 Volume 4 Issue 3",
-        "url": "https://dl.acm.org/toc/PACMMOD/2026/4/3"
+        "title": "정적 튜닝보다 workload drift 대응이 핵심",
+        "detail": "기존 learned component와 tuned configuration을 언제 유지하고 언제 재튜닝할지가 실제 배포 환경의 핵심 문제가 되고 있습니다.",
+        "tag": "DB Tuning"
+      },
+      {
+        "title": "Agent는 모델이 아니라 workflow 시스템",
+        "detail": "Planning, retrieval, tool execution, retry, cache와 중간 결과를 함께 조정하는 orchestration 문제가 독립적인 시스템 연구 축으로 성장하고 있습니다.",
+        "tag": "Agents"
+      },
+      {
+        "title": "AI query의 비용을 optimizer가 제어",
+        "detail": "Proxy model, sampling, cascade를 사용해 품질 제약을 만족하면서 비싼 LLM·VLM 호출을 줄이는 연구가 확대되고 있습니다.",
+        "tag": "AI + DB"
+      },
+      {
+        "title": "데이터 이동과 재사용이 다시 중심 문제",
+        "detail": "KV cache, prefix sharing, PIM operator fusion처럼 계산량보다 데이터 이동과 중복 실행을 줄이는 접근이 강해지고 있습니다.",
+        "tag": "Systems"
       }
     ]
   },
   "topics": [
     {
       "id": "filtered-vector-search",
-      "rank": 1,
       "title": "Filtered Vector Search와 Hybrid Retrieval Optimizer",
-      "category": "Vector Database",
-      "tags": [
+      "subtitle": "필터 조건이 포함된 벡터 검색이 단일 ANN 알고리즘 문제가 아니라 필터 선택도, 벡터-속성 상관관계, 그래프 연결성, pre/post-filter 전략을 함께 결정하는 DBMS 실행계획 문제로 이동하고 있다.",
+      "cluster": "Retrieval",
+      "domains": [
+        "Database",
+        "AI",
+        "Systems"
+      ],
+      "status": "가장 추천",
+      "scores": {
+        "hotness": 5,
+        "fit": 5,
+        "novelty": 3,
+        "difficulty": 3,
+        "paperability": 5
+      },
+      "oneLine": "query hardness, filter selectivity, label fragmentation, filtered-subgraph connectivity를 입력으로 받아 pre-filter, post-filter, ACORN형 탐색, label-aware graph, exact scan 중 하나를 선택하는 filtered-ANNS optimizer.",
+      "whyNow": "최근 연구는 필터 전용 인덱스를 하나 더 제안하는 데서 벗어나 기존 PostgreSQL 및 범용 HNSW 환경에서 전략별 성능 안정성과 실행 조건을 분석하는 방향으로 확장된다. RAG, 전자상거래, 엔터프라이즈 검색에서는 벡터 유사도와 접근권한·카테고리·시간 조건을 함께 사용하는 쿼리가 일반적이다. 필터 선택도에 따라 최적 전략이 크게 달라지므로 optimizer가 필요하다.",
+      "researchQuestions": [
+        "Filter selectivity와 query hardness를 함께 사용해 검색 전략을 선택할 수 있는가?",
+        "Label fragmentation과 filtered-subgraph connectivity를 적은 probe로 추정할 수 있는가?",
+        "Pre-filter, post-filter, filtered graph, exact scan 사이의 전환 기준은 무엇인가?",
+        "DBMS optimizer가 recall 제약과 latency를 동시에 만족하도록 계획을 선택할 수 있는가?"
+      ],
+      "starter": "SIFT1M 또는 GloVe에 상관·비상관 synthetic label을 부여하고 선택도 0.1%, 1%, 10%, 50%에서 pre-filter, post-filter, ACORN을 비교한다. AdaTune hardness와 각 전략의 latency degradation 상관관계를 측정한다.",
+      "risk": "Filtered ANNS 알고리즘 자체는 경쟁이 치열하므로 새 그래프 구조보다 전략 선택, workload characterization, DBMS 통합 기여를 명확히 해야 합니다.",
+      "signals": [
         "filtered-ANNS",
         "HNSW",
         "hybrid-query",
         "query-optimization",
         "PostgreSQL"
       ],
-      "status": "top_pick",
-      "summary": "필터 조건이 포함된 벡터 검색이 단일 ANN 알고리즘 문제가 아니라 필터 선택도, 벡터-속성 상관관계, 그래프 연결성, pre/post-filter 전략을 함께 결정하는 DBMS 실행계획 문제로 이동하고 있다.",
-      "key_change": "최근 연구는 필터 전용 인덱스를 하나 더 제안하는 데서 벗어나 기존 PostgreSQL 및 범용 HNSW 환경에서 전략별 성능 안정성과 실행 조건을 분석하는 방향으로 확장된다.",
-      "why_now": "RAG, 전자상거래, 엔터프라이즈 검색에서는 벡터 유사도와 접근권한·카테고리·시간 조건을 함께 사용하는 쿼리가 일반적이다. 필터 선택도에 따라 최적 전략이 크게 달라지므로 optimizer가 필요하다.",
-      "research_direction": "query hardness, filter selectivity, label fragmentation, filtered-subgraph connectivity를 입력으로 받아 pre-filter, post-filter, ACORN형 탐색, label-aware graph, exact scan 중 하나를 선택하는 filtered-ANNS optimizer.",
-      "smallest_experiment": "SIFT1M 또는 GloVe에 상관·비상관 synthetic label을 부여하고 선택도 0.1%, 1%, 10%, 50%에서 pre-filter, post-filter, ACORN을 비교한다. AdaTune hardness와 각 전략의 latency degradation 상관관계를 측정한다.",
-      "scores": {
-        "hotness": 5,
-        "novelty_to_user": 3,
-        "experience_fit": 5,
-        "entry_difficulty": 3,
-        "publication_potential": 5
-      },
+      "keywords": [
+        "filtered-ANNS",
+        "HNSW",
+        "hybrid-query",
+        "query-optimization",
+        "PostgreSQL"
+      ],
+      "sources": [
+        {
+          "label": "An In-Depth Study of Filter-Agnostic Vector Search on a PostgreSQL Database System 원문",
+          "url": "https://dl.acm.org/toc/PACMMOD/2026/4/3"
+        },
+        {
+          "label": "관련 공식 출처",
+          "url": "https://2026.sigmod.org/sigmod_papers.shtml"
+        },
+        {
+          "label": "ACORN: Performant and Predicate-Agnostic Search Over Vector Embeddings and Structured Data 원문",
+          "url": "https://dl.acm.org/doi/10.1145/3654923"
+        },
+        {
+          "label": "관련 공식 출처",
+          "url": "https://arxiv.org/abs/2403.04871"
+        },
+        {
+          "label": "Filtered-DiskANN: Graph Algorithms for Approximate Nearest Neighbor Search with Filters 원문",
+          "url": "https://dl.acm.org/doi/10.1145/3543507.3583552"
+        },
+        {
+          "label": "관련 공식 출처",
+          "url": "https://harsha-simhadri.org/pubs/Filtered-DiskANN23.pdf"
+        },
+        {
+          "label": "VecFlow: A High-Performance Vector Data Management System for Filtered-Search on GPUs 원문",
+          "url": "https://dl.acm.org/toc/PACMMOD/2025/3/4"
+        }
+      ],
       "papers": [
         {
           "title": "An In-Depth Study of Filter-Agnostic Vector Search on a PostgreSQL Database System",
           "venue": "SIGMOD / PACMMOD 2026",
-          "year": 2026,
-          "summary_ko": "PostgreSQL 환경에서 특정 필터 구조에 종속되지 않는 벡터 검색 방식을 체계적으로 분석하고, 실제 DBMS 통합 시 발생하는 성능 및 실행 특성을 평가하는 실험 연구다.",
-          "why_relevant": "filtered ANNS를 독립 라이브러리가 아니라 PostgreSQL 실행 환경의 문제로 다룬다는 점에서 optimizer 및 자동 튜닝 연구의 직접적인 출발점이 된다.",
-          "url": "https://dl.acm.org/toc/PACMMOD/2026/4/3",
-          "source_url": "https://2026.sigmod.org/sigmod_papers.shtml"
+          "date": "2026",
+          "type": "Research Paper",
+          "summary": "PostgreSQL 환경에서 특정 필터 구조에 종속되지 않는 벡터 검색 방식을 체계적으로 분석하고, 실제 DBMS 통합 시 발생하는 성능 및 실행 특성을 평가하는 실험 연구다.",
+          "relevance": "filtered ANNS를 독립 라이브러리가 아니라 PostgreSQL 실행 환경의 문제로 다룬다는 점에서 optimizer 및 자동 튜닝 연구의 직접적인 출발점이 된다.",
+          "url": "https://dl.acm.org/toc/PACMMOD/2026/4/3"
         },
         {
           "title": "ACORN: Performant and Predicate-Agnostic Search Over Vector Embeddings and Structured Data",
           "venue": "SIGMOD / PACMMOD 2024",
-          "year": 2024,
-          "summary_ko": "HNSW 그래프를 더 조밀하게 구성하고 질의 시 predicate를 만족하는 부분 그래프를 탐색함으로써 임의의 구조화 필터가 결합된 벡터 검색을 가속한다.",
-          "why_relevant": "필터 선택도와 predicate-subgraph 연결성이 검색 성능을 좌우한다는 점을 명확히 보여주며, 전략 선택형 optimizer의 핵심 후보 실행 방식이다.",
-          "url": "https://dl.acm.org/doi/10.1145/3654923",
-          "source_url": "https://arxiv.org/abs/2403.04871"
+          "date": "2024",
+          "type": "Research Paper",
+          "summary": "HNSW 그래프를 더 조밀하게 구성하고 질의 시 predicate를 만족하는 부분 그래프를 탐색함으로써 임의의 구조화 필터가 결합된 벡터 검색을 가속한다.",
+          "relevance": "필터 선택도와 predicate-subgraph 연결성이 검색 성능을 좌우한다는 점을 명확히 보여주며, 전략 선택형 optimizer의 핵심 후보 실행 방식이다.",
+          "url": "https://dl.acm.org/doi/10.1145/3654923"
         },
         {
           "title": "Filtered-DiskANN: Graph Algorithms for Approximate Nearest Neighbor Search with Filters",
           "venue": "The Web Conference 2023",
-          "year": 2023,
-          "summary_ko": "벡터마다 연결된 label을 그래프 구축 과정에 반영해 필터 조건을 만족하는 이웃으로 효율적으로 이동하도록 설계한 filtered ANNS 알고리즘을 제안한다.",
-          "why_relevant": "검색 단계에서만 필터링하는 방식의 한계를 보여주고, label 분포와 그래프 구축 정책을 함께 최적화해야 함을 제시한다.",
-          "url": "https://dl.acm.org/doi/10.1145/3543507.3583552",
-          "source_url": "https://harsha-simhadri.org/pubs/Filtered-DiskANN23.pdf"
+          "date": "2023",
+          "type": "Research Paper",
+          "summary": "벡터마다 연결된 label을 그래프 구축 과정에 반영해 필터 조건을 만족하는 이웃으로 효율적으로 이동하도록 설계한 filtered ANNS 알고리즘을 제안한다.",
+          "relevance": "검색 단계에서만 필터링하는 방식의 한계를 보여주고, label 분포와 그래프 구축 정책을 함께 최적화해야 함을 제시한다.",
+          "url": "https://dl.acm.org/doi/10.1145/3543507.3583552"
         },
         {
           "title": "VecFlow: A High-Performance Vector Data Management System for Filtered-Search on GPUs",
           "venue": "SIGMOD / PACMMOD 2026",
-          "year": 2026,
-          "summary_ko": "GPU에서 filtered vector search를 고성능으로 처리하기 위한 벡터 데이터 관리 시스템으로, 필터와 벡터 연산의 실행 파이프라인 및 병렬화를 함께 최적화한다.",
-          "why_relevant": "CPU 기반 filtered ANNS를 넘어 하드웨어별 실행 전략 선택과 시스템 파라미터 튜닝으로 연구 범위를 확장할 수 있다.",
-          "url": "https://dl.acm.org/toc/PACMMOD/2025/3/4",
-          "source_url": "https://2026.sigmod.org/sigmod_papers.shtml"
+          "date": "2026",
+          "type": "Research Paper",
+          "summary": "GPU에서 filtered vector search를 고성능으로 처리하기 위한 벡터 데이터 관리 시스템으로, 필터와 벡터 연산의 실행 파이프라인 및 병렬화를 함께 최적화한다.",
+          "relevance": "CPU 기반 filtered ANNS를 넘어 하드웨어별 실행 전략 선택과 시스템 파라미터 튜닝으로 연구 범위를 확장할 수 있다.",
+          "url": "https://dl.acm.org/toc/PACMMOD/2025/3/4"
         }
       ]
     },
     {
       "id": "drift-aware-tuning",
-      "rank": 2,
       "title": "Workload-Drift-Aware Vector DB 및 Learned DBMS Tuning",
-      "category": "Autonomous Database",
-      "tags": [
+      "subtitle": "자동 튜닝과 learned DBMS 연구의 질문이 고정 workload에서 좋은 설정을 찾는 것에서 workload가 변했을 때 기존 모델과 설정을 언제 폐기·재사용·부분 재튜닝할지로 이동하고 있다.",
+      "cluster": "Database Tuning",
+      "domains": [
+        "Database",
+        "Systems",
+        "AI"
+      ],
+      "status": "가장 추천",
+      "scores": {
+        "hotness": 5,
+        "fit": 5,
+        "novelty": 3,
+        "difficulty": 3,
+        "paperability": 5
+      },
+      "oneLine": "workload hardness profile과 성능 residual을 이용해 drift를 감지하고 설정 유지, warm-start, 부분 튜닝, 전체 재튜닝 중 하나를 선택하는 continual AdaTune.",
+      "whyNow": "성능 향상뿐 아니라 out-of-distribution workload에서의 robustness, negative transfer, drift detection, 재튜닝 비용이 핵심 평가 항목으로 부상한다. 실제 벡터 검색 시스템에서는 query hardness, embedding model, filter 분포, target recall, 데이터 크기와 하드웨어가 지속적으로 변한다.",
+      "researchQuestions": [
+        "Workload drift를 성능 저하가 발생하기 전에 감지할 수 있는가?",
+        "기존 설정 유지, warm-start, 부분 재튜닝, 전체 재튜닝 중 무엇을 선택해야 하는가?",
+        "Embedding model·filter 분포·target recall 변화의 영향을 분리할 수 있는가?",
+        "재튜닝 비용까지 고려한 장기 최적화 정책을 설계할 수 있는가?"
+      ],
+      "starter": "한 데이터셋에서 easy→hard query mix, no-filter→1% filter, recall 0.90→0.97 순으로 workload를 바꾸고 fixed, full retuning, warm-start, drift-aware partial retuning을 비교한다.",
+      "risk": "단순히 workload를 몇 번 바꾸는 실험으로 보이지 않도록 drift 정의, detection metric, 장기 비용 모델을 명확히 해야 합니다.",
+      "signals": [
         "workload-drift",
         "continual-tuning",
         "OOD",
         "vector-database",
         "learned-DBMS"
       ],
-      "status": "top_pick",
-      "summary": "자동 튜닝과 learned DBMS 연구의 질문이 고정 workload에서 좋은 설정을 찾는 것에서 workload가 변했을 때 기존 모델과 설정을 언제 폐기·재사용·부분 재튜닝할지로 이동하고 있다.",
-      "key_change": "성능 향상뿐 아니라 out-of-distribution workload에서의 robustness, negative transfer, drift detection, 재튜닝 비용이 핵심 평가 항목으로 부상한다.",
-      "why_now": "실제 벡터 검색 시스템에서는 query hardness, embedding model, filter 분포, target recall, 데이터 크기와 하드웨어가 지속적으로 변한다.",
-      "research_direction": "workload hardness profile과 성능 residual을 이용해 drift를 감지하고 설정 유지, warm-start, 부분 튜닝, 전체 재튜닝 중 하나를 선택하는 continual AdaTune.",
-      "smallest_experiment": "한 데이터셋에서 easy→hard query mix, no-filter→1% filter, recall 0.90→0.97 순으로 workload를 바꾸고 fixed, full retuning, warm-start, drift-aware partial retuning을 비교한다.",
-      "scores": {
-        "hotness": 5,
-        "novelty_to_user": 3,
-        "experience_fit": 5,
-        "entry_difficulty": 3,
-        "publication_potential": 5
-      },
+      "keywords": [
+        "workload-drift",
+        "continual-tuning",
+        "OOD",
+        "vector-database",
+        "learned-DBMS"
+      ],
+      "sources": [
+        {
+          "label": "Are Learned DBMS Components Robust to Workload Drift? 원문",
+          "url": "https://dl.acm.org/toc/PACMMOD/2026/4/3"
+        },
+        {
+          "label": "관련 공식 출처",
+          "url": "https://2026.sigmod.org/sigmod_papers.shtml"
+        },
+        {
+          "label": "Rainbow: Risk-aware Index Benefit Estimation Facing Out Of Distribution Workloads 원문",
+          "url": "https://dl.acm.org/toc/PACMMOD/2025/3/4"
+        }
+      ],
       "papers": [
         {
           "title": "Are Learned DBMS Components Robust to Workload Drift?",
           "venue": "SIGMOD / PACMMOD 2026",
-          "year": 2026,
-          "summary_ko": "학습 기반 DBMS 구성요소가 학습 시점과 다른 workload에서도 신뢰할 수 있는지를 실험적으로 분석하고 drift 상황에서의 성능 저하를 점검한다.",
-          "why_relevant": "AdaTune과 RelTune이 암묵적으로 가정한 정적 workload 조건을 직접 문제화하며, drift-aware retuning의 필요성을 뒷받침한다.",
-          "url": "https://dl.acm.org/toc/PACMMOD/2026/4/3",
-          "source_url": "https://2026.sigmod.org/sigmod_papers.shtml"
+          "date": "2026",
+          "type": "Research Paper",
+          "summary": "학습 기반 DBMS 구성요소가 학습 시점과 다른 workload에서도 신뢰할 수 있는지를 실험적으로 분석하고 drift 상황에서의 성능 저하를 점검한다.",
+          "relevance": "AdaTune과 RelTune이 암묵적으로 가정한 정적 workload 조건을 직접 문제화하며, drift-aware retuning의 필요성을 뒷받침한다.",
+          "url": "https://dl.acm.org/toc/PACMMOD/2026/4/3"
         },
         {
           "title": "Rainbow: Risk-aware Index Benefit Estimation Facing Out Of Distribution Workloads",
           "venue": "SIGMOD / PACMMOD 2026",
-          "year": 2026,
-          "summary_ko": "학습 분포에서 벗어난 workload에 대해 인덱스 효과를 과신하지 않도록 위험을 고려한 benefit estimation 방식을 연구한다.",
-          "why_relevant": "단순 평균 예측값이 아니라 불확실성과 실패 위험을 고려해 index 또는 configuration을 선택하는 안전한 튜너 설계에 연결된다.",
-          "url": "https://dl.acm.org/toc/PACMMOD/2025/3/4",
-          "source_url": "https://2026.sigmod.org/sigmod_papers.shtml"
+          "date": "2026",
+          "type": "Research Paper",
+          "summary": "학습 분포에서 벗어난 workload에 대해 인덱스 효과를 과신하지 않도록 위험을 고려한 benefit estimation 방식을 연구한다.",
+          "relevance": "단순 평균 예측값이 아니라 불확실성과 실패 위험을 고려해 index 또는 configuration을 선택하는 안전한 튜너 설계에 연결된다.",
+          "url": "https://dl.acm.org/toc/PACMMOD/2025/3/4"
         },
         {
           "title": "Understanding Robustness Issues of Updatable Learned Indexes",
           "venue": "SIGMOD / PACMMOD 2026",
-          "year": 2026,
-          "summary_ko": "데이터 삽입과 분포 변화가 발생하는 learned index에서 성능 및 구조적 안정성이 어떻게 무너지는지를 체계적으로 분석한다.",
-          "why_relevant": "벡터 데이터 업데이트와 embedding drift가 index 품질에 미치는 영향을 분석하는 후속 연구 설계에 참고할 수 있다.",
-          "url": "https://dl.acm.org/toc/PACMMOD/2025/3/4",
-          "source_url": "https://2026.sigmod.org/sigmod_papers.shtml"
+          "date": "2026",
+          "type": "Research Paper",
+          "summary": "데이터 삽입과 분포 변화가 발생하는 learned index에서 성능 및 구조적 안정성이 어떻게 무너지는지를 체계적으로 분석한다.",
+          "relevance": "벡터 데이터 업데이트와 embedding drift가 index 품질에 미치는 영향을 분석하는 후속 연구 설계에 참고할 수 있다.",
+          "url": "https://dl.acm.org/toc/PACMMOD/2025/3/4"
         },
         {
           "title": "This is Going to Sound Crazy, But What If We Used Large Language Models to Boost Automatic Database Tuning Algorithms By Leveraging Prior History?",
           "venue": "SIGMOD / PACMMOD 2026",
-          "year": 2026,
-          "summary_ko": "과거 튜닝 기록을 LLM이 해석해 새로운 workload의 탐색을 빠르게 시작하고, 처음부터 학습하는 것보다 효율적으로 좋은 설정을 찾는 방향을 탐구한다.",
-          "why_relevant": "RelTune의 관계 지식과 이전 tuning history를 drift 상황의 warm-start 및 transfer policy로 확장하는 아이디어와 맞닿아 있다.",
-          "url": "https://dl.acm.org/toc/PACMMOD/2025/3/4",
-          "source_url": "https://2026.sigmod.org/sigmod_papers.shtml"
+          "date": "2026",
+          "type": "Research Paper",
+          "summary": "과거 튜닝 기록을 LLM이 해석해 새로운 workload의 탐색을 빠르게 시작하고, 처음부터 학습하는 것보다 효율적으로 좋은 설정을 찾는 방향을 탐구한다.",
+          "relevance": "RelTune의 관계 지식과 이전 tuning history를 drift 상황의 warm-start 및 transfer policy로 확장하는 아이디어와 맞닿아 있다.",
+          "url": "https://dl.acm.org/toc/PACMMOD/2025/3/4"
         }
       ]
     },
     {
       "id": "agentic-data-management",
-      "rank": 3,
       "title": "Agentic Data Management와 Workflow Tuning",
-      "category": "Agent Systems",
-      "tags": [
+      "subtitle": "에이전트 연구가 단순한 LLM 추론 능력보다 검색, SQL·Python 실행, 검증, 재시도, 캐시, 중간 결과 관리로 구성된 데이터 처리 파이프라인의 실행 문제로 이동한다.",
+      "cluster": "Agents",
+      "domains": [
+        "Agents",
+        "AI",
+        "Systems"
+      ],
+      "status": "가장 추천",
+      "scores": {
+        "hotness": 5,
+        "fit": 4,
+        "novelty": 4,
+        "difficulty": 3,
+        "paperability": 4
+      },
+      "oneLine": "task success constraint 아래 agent 수, retrieval top-k, planning depth, retry 횟수, 병렬도, 모델 크기와 cache policy를 자동 조절하는 agent workflow tuner.",
+      "whyNow": "agent를 하나의 모델이 아니라 여러 operator와 state를 가진 workflow로 보고 orchestration, 재사용, 실패 복구와 비용 제한을 시스템적으로 최적화한다. 실제 데이터 분석 에이전트는 여러 도구를 반복 호출하므로 planning depth, retrieval top-k, retry budget, model routing과 cache가 정확도와 비용을 동시에 좌우한다.",
+      "researchQuestions": [
+        "Agent workflow의 planning depth와 retrieval budget을 task별로 자동 조절할 수 있는가?",
+        "중간 결과와 tool output을 언제 저장하고 재사용해야 하는가?",
+        "실패 시 어느 단계에서 재시작하는 것이 비용과 성공률 측면에서 유리한가?",
+        "Task success 제약 아래 token cost와 latency를 최소화할 수 있는가?"
+      ],
+      "starter": "간단한 SQL·문서 분석 agent에서 retrieval top-k, planning depth, retry budget, 모델 크기를 변화시키고 task success, token cost, latency, tool-call 수를 수집한 뒤 staged optimization을 적용한다.",
+      "risk": "Agent benchmark의 분산이 크고 모델 변화가 빨라서 독립적인 workflow metric과 재현 가능한 tool environment가 필요합니다.",
+      "signals": [
         "agentic-workflow",
         "pipeline-orchestration",
         "tool-use",
         "retrieval",
         "cost-tuning"
       ],
-      "status": "top_pick",
-      "summary": "에이전트 연구가 단순한 LLM 추론 능력보다 검색, SQL·Python 실행, 검증, 재시도, 캐시, 중간 결과 관리로 구성된 데이터 처리 파이프라인의 실행 문제로 이동한다.",
-      "key_change": "agent를 하나의 모델이 아니라 여러 operator와 state를 가진 workflow로 보고 orchestration, 재사용, 실패 복구와 비용 제한을 시스템적으로 최적화한다.",
-      "why_now": "실제 데이터 분석 에이전트는 여러 도구를 반복 호출하므로 planning depth, retrieval top-k, retry budget, model routing과 cache가 정확도와 비용을 동시에 좌우한다.",
-      "research_direction": "task success constraint 아래 agent 수, retrieval top-k, planning depth, retry 횟수, 병렬도, 모델 크기와 cache policy를 자동 조절하는 agent workflow tuner.",
-      "smallest_experiment": "간단한 SQL·문서 분석 agent에서 retrieval top-k, planning depth, retry budget, 모델 크기를 변화시키고 task success, token cost, latency, tool-call 수를 수집한 뒤 staged optimization을 적용한다.",
-      "scores": {
-        "hotness": 5,
-        "novelty_to_user": 4,
-        "experience_fit": 4,
-        "entry_difficulty": 3,
-        "publication_potential": 4
-      },
+      "keywords": [
+        "agentic-workflow",
+        "pipeline-orchestration",
+        "tool-use",
+        "retrieval",
+        "cost-tuning"
+      ],
+      "sources": [
+        {
+          "label": "AgenticScholar: Agentic Data Management with Pipeline Orchestration for Scholarly Corpora 원문",
+          "url": "https://dl.acm.org/toc/PACMMOD/2026/4/3"
+        },
+        {
+          "label": "관련 공식 출처",
+          "url": "https://2026.sigmod.org/sigmod_papers.shtml"
+        }
+      ],
       "papers": [
         {
           "title": "AgenticScholar: Agentic Data Management with Pipeline Orchestration for Scholarly Corpora",
           "venue": "SIGMOD / PACMMOD 2026",
-          "year": 2026,
-          "summary_ko": "학술 코퍼스의 검색과 분석을 여러 agent와 데이터 처리 단계로 구성하고, 이를 pipeline orchestration 관점에서 관리하는 agentic data management 시스템이다.",
-          "why_relevant": "사용자가 수행 중인 연구 논문 탐색 홈페이지와 직접 연결되며, agent의 retrieval·analysis workflow를 시스템 연구로 확장할 수 있다.",
-          "url": "https://dl.acm.org/toc/PACMMOD/2026/4/3",
-          "source_url": "https://2026.sigmod.org/sigmod_papers.shtml"
+          "date": "2026",
+          "type": "Research Paper",
+          "summary": "학술 코퍼스의 검색과 분석을 여러 agent와 데이터 처리 단계로 구성하고, 이를 pipeline orchestration 관점에서 관리하는 agentic data management 시스템이다.",
+          "relevance": "사용자가 수행 중인 연구 논문 탐색 홈페이지와 직접 연결되며, agent의 retrieval·analysis workflow를 시스템 연구로 확장할 수 있다.",
+          "url": "https://dl.acm.org/toc/PACMMOD/2026/4/3"
         },
         {
           "title": "Efficient LLM Serving for Agentic Workflows: A Data Systems Perspective",
           "venue": "SIGMOD / PACMMOD 2026",
-          "year": 2026,
-          "summary_ko": "여러 단계와 반복 호출을 포함하는 agent workload의 특성을 데이터 시스템 관점에서 분석하고 효율적인 LLM 실행 방법을 다룬다.",
-          "why_relevant": "agent workflow의 시스템 파라미터와 workload 구조를 함께 튜닝해야 한다는 연구 문제를 직접 지지한다.",
-          "url": "https://dl.acm.org/toc/PACMMOD/2026/4/3",
-          "source_url": "https://2026.sigmod.org/sigmod_papers.shtml"
+          "date": "2026",
+          "type": "Research Paper",
+          "summary": "여러 단계와 반복 호출을 포함하는 agent workload의 특성을 데이터 시스템 관점에서 분석하고 효율적인 LLM 실행 방법을 다룬다.",
+          "relevance": "agent workflow의 시스템 파라미터와 workload 구조를 함께 튜닝해야 한다는 연구 문제를 직접 지지한다.",
+          "url": "https://dl.acm.org/toc/PACMMOD/2026/4/3"
         },
         {
           "title": "Chatty-KG: A Multi-Agent AI System for On-Demand Conversational Question Answering over Knowledge Graphs",
           "venue": "SIGMOD / PACMMOD 2026",
-          "year": 2026,
-          "summary_ko": "지식 그래프 질의응답에서 역할이 다른 여러 agent가 검색, 추론, 응답 생성을 협력하도록 구성한 대화형 시스템이다.",
-          "why_relevant": "다중 agent 수, 역할 분할, 병렬 실행과 결과 병합을 tuning dimension으로 정의하는 데 적절한 사례다.",
-          "url": "https://dl.acm.org/toc/PACMMOD/2026/4/3",
-          "source_url": "https://2026.sigmod.org/sigmod_papers.shtml"
+          "date": "2026",
+          "type": "Research Paper",
+          "summary": "지식 그래프 질의응답에서 역할이 다른 여러 agent가 검색, 추론, 응답 생성을 협력하도록 구성한 대화형 시스템이다.",
+          "relevance": "다중 agent 수, 역할 분할, 병렬 실행과 결과 병합을 tuning dimension으로 정의하는 데 적절한 사례다.",
+          "url": "https://dl.acm.org/toc/PACMMOD/2026/4/3"
         },
         {
           "title": "BAT: Target-Instance-Free Data Preparation Synthesis via LLM-Driven Tree Search",
           "venue": "SIGMOD / PACMMOD 2026",
-          "year": 2026,
-          "summary_ko": "LLM이 tree search를 통해 데이터 준비 프로그램 후보를 생성하고 탐색하여 목표 인스턴스에 직접 맞춘 예시가 부족한 상황에서도 변환 파이프라인을 합성한다.",
-          "why_relevant": "agent planning을 black-box search 또는 tree search 문제로 보고 실행 결과를 통해 후보를 평가하는 구조가 자동 튜닝과 유사하다.",
-          "url": "https://dl.acm.org/toc/PACMMOD/2026/4/3",
-          "source_url": "https://2026.sigmod.org/sigmod_papers.shtml"
+          "date": "2026",
+          "type": "Research Paper",
+          "summary": "LLM이 tree search를 통해 데이터 준비 프로그램 후보를 생성하고 탐색하여 목표 인스턴스에 직접 맞춘 예시가 부족한 상황에서도 변환 파이프라인을 합성한다.",
+          "relevance": "agent planning을 black-box search 또는 tree search 문제로 보고 실행 결과를 통해 후보를 평가하는 구조가 자동 튜닝과 유사하다.",
+          "url": "https://dl.acm.org/toc/PACMMOD/2026/4/3"
         }
       ]
     },
     {
       "id": "ai-query-processing",
-      "rank": 4,
       "title": "Cost-Aware AI Query Processing와 Approximate Inference",
-      "category": "AI + Database",
-      "tags": [
+      "subtitle": "LLM·VLM·분류 모델을 query operator처럼 사용하는 환경에서 모든 tuple에 비싼 모델을 실행하지 않고 proxy, sampling, cascade와 통계적 보장을 조합하는 연구가 빠르게 확대되고 있다.",
+      "cluster": "Data + AI",
+      "domains": [
+        "Database",
+        "AI",
+        "Systems"
+      ],
+      "status": "유망",
+      "scores": {
+        "hotness": 5,
+        "fit": 4,
+        "novelty": 4,
+        "difficulty": 4,
+        "paperability": 5
+      },
+      "oneLine": "vector retrieval→lightweight classifier→expensive LLM/VLM verifier로 이어지는 cascade에서 단계별 budget을 target accuracy 또는 recall 제약 아래 자동 튜닝한다.",
+      "whyNow": "전통적인 approximate query processing이 숫자 집계의 근사에서 AI predicate와 비정형 데이터 처리의 비용·정확도 제어로 확장된다. AI model invocation cost가 데이터 스캔과 join 비용보다 클 수 있어, 모델 선택과 호출 순서를 query optimizer가 결정해야 한다.",
+      "researchQuestions": [
+        "Proxy model의 정확도와 selectivity를 적은 표본으로 예측할 수 있는가?",
+        "Vector retrieval, lightweight model, expensive model의 최적 실행 순서는 무엇인가?",
+        "통계적 품질 보장과 실시간 latency SLO를 함께 만족할 수 있는가?",
+        "Workload별로 cascade threshold와 단계별 budget을 자동 튜닝할 수 있는가?"
+      ],
+      "starter": "텍스트 분류 데이터에서 embedding retrieval, 작은 분류기, 큰 모델 검증의 3단계를 구성하고 full model, fixed cascade, adaptive cascade의 cost-accuracy를 비교한다.",
+      "risk": "모델 정확도와 데이터셋 선택에 따라 결과가 흔들릴 수 있으므로 품질 제약과 통계적 보장을 명확히 설계해야 합니다.",
+      "signals": [
         "AI-query",
         "approximate-query-processing",
         "proxy-model",
         "unstructured-data",
         "cascade"
       ],
-      "status": "watch",
-      "summary": "LLM·VLM·분류 모델을 query operator처럼 사용하는 환경에서 모든 tuple에 비싼 모델을 실행하지 않고 proxy, sampling, cascade와 통계적 보장을 조합하는 연구가 빠르게 확대되고 있다.",
-      "key_change": "전통적인 approximate query processing이 숫자 집계의 근사에서 AI predicate와 비정형 데이터 처리의 비용·정확도 제어로 확장된다.",
-      "why_now": "AI model invocation cost가 데이터 스캔과 join 비용보다 클 수 있어, 모델 선택과 호출 순서를 query optimizer가 결정해야 한다.",
-      "research_direction": "vector retrieval→lightweight classifier→expensive LLM/VLM verifier로 이어지는 cascade에서 단계별 budget을 target accuracy 또는 recall 제약 아래 자동 튜닝한다.",
-      "smallest_experiment": "텍스트 분류 데이터에서 embedding retrieval, 작은 분류기, 큰 모델 검증의 3단계를 구성하고 full model, fixed cascade, adaptive cascade의 cost-accuracy를 비교한다.",
-      "scores": {
-        "hotness": 5,
-        "novelty_to_user": 4,
-        "experience_fit": 4,
-        "entry_difficulty": 4,
-        "publication_potential": 5
-      },
+      "keywords": [
+        "AI-query",
+        "approximate-query-processing",
+        "proxy-model",
+        "unstructured-data",
+        "cascade"
+      ],
+      "sources": [
+        {
+          "label": "100x Cost & Latency Reduction: Performance Analysis of AI Query Approximation using Lightweight Proxy Models 원문",
+          "url": "https://dl.acm.org/toc/PACMMOD/2026/4/3"
+        },
+        {
+          "label": "관련 공식 출처",
+          "url": "https://2026.sigmod.org/sigmod_papers.shtml"
+        },
+        {
+          "label": "Task Cascades for Efficient Unstructured Data Processing 원문",
+          "url": "https://dl.acm.org/toc/PACMMOD/2025/3/4"
+        }
+      ],
       "papers": [
         {
           "title": "100x Cost & Latency Reduction: Performance Analysis of AI Query Approximation using Lightweight Proxy Models",
           "venue": "SIGMOD / PACMMOD 2026",
-          "year": 2026,
-          "summary_ko": "고비용 AI query를 경량 proxy model로 근사할 때 비용과 지연시간을 크게 줄일 수 있는 조건과 정확도 손실을 실험적으로 분석한다.",
-          "why_relevant": "target quality를 만족하면서 비용을 최소화하는 문제 구조가 AdaTune의 recall-constrained optimization과 거의 동일하다.",
-          "url": "https://dl.acm.org/toc/PACMMOD/2026/4/3",
-          "source_url": "https://2026.sigmod.org/sigmod_papers.shtml"
+          "date": "2026",
+          "type": "Research Paper",
+          "summary": "고비용 AI query를 경량 proxy model로 근사할 때 비용과 지연시간을 크게 줄일 수 있는 조건과 정확도 손실을 실험적으로 분석한다.",
+          "relevance": "target quality를 만족하면서 비용을 최소화하는 문제 구조가 AdaTune의 recall-constrained optimization과 거의 동일하다.",
+          "url": "https://dl.acm.org/toc/PACMMOD/2026/4/3"
         },
         {
           "title": "Accelerating Approximate Analytical Join Queries over Unstructured Data with Statistical Guarantees",
           "venue": "SIGMOD / PACMMOD 2026",
-          "year": 2026,
-          "summary_ko": "비정형 데이터에 대한 분석 join에서 모든 객체를 고비용 모델로 처리하지 않고 표본화와 근사를 사용하면서 통계적 품질 보장을 제공한다.",
-          "why_relevant": "벡터 검색 후보 생성과 model verification을 결합한 approximate join 실행계획 연구로 확장할 수 있다.",
-          "url": "https://dl.acm.org/toc/PACMMOD/2026/4/3",
-          "source_url": "https://2026.sigmod.org/sigmod_papers.shtml"
+          "date": "2026",
+          "type": "Research Paper",
+          "summary": "비정형 데이터에 대한 분석 join에서 모든 객체를 고비용 모델로 처리하지 않고 표본화와 근사를 사용하면서 통계적 품질 보장을 제공한다.",
+          "relevance": "벡터 검색 후보 생성과 model verification을 결합한 approximate join 실행계획 연구로 확장할 수 있다.",
+          "url": "https://dl.acm.org/toc/PACMMOD/2026/4/3"
         },
         {
           "title": "A Backend-Agnostic Compiler for Approximate Query Processing with Probabilistic Tensor Algebra",
           "venue": "SIGMOD / PACMMOD 2026",
-          "year": 2026,
-          "summary_ko": "확률적 tensor algebra를 중간 표현으로 사용해 특정 실행 backend에 종속되지 않는 approximate query compiler를 제안한다.",
-          "why_relevant": "AI query의 operator와 approximation policy를 declarative하게 표현하고 CPU, GPU, PIM 등 여러 backend로 내리는 연구에 기반이 된다.",
-          "url": "https://dl.acm.org/toc/PACMMOD/2026/4/3",
-          "source_url": "https://2026.sigmod.org/sigmod_papers.shtml"
+          "date": "2026",
+          "type": "Research Paper",
+          "summary": "확률적 tensor algebra를 중간 표현으로 사용해 특정 실행 backend에 종속되지 않는 approximate query compiler를 제안한다.",
+          "relevance": "AI query의 operator와 approximation policy를 declarative하게 표현하고 CPU, GPU, PIM 등 여러 backend로 내리는 연구에 기반이 된다.",
+          "url": "https://dl.acm.org/toc/PACMMOD/2026/4/3"
         },
         {
           "title": "Task Cascades for Efficient Unstructured Data Processing",
           "venue": "SIGMOD / PACMMOD 2026",
-          "year": 2026,
-          "summary_ko": "비정형 데이터 처리 작업을 비용과 정확도가 다른 여러 단계의 cascade로 구성해 전체 실행 비용을 줄이는 시스템을 다룬다.",
-          "why_relevant": "단계 수, 모델 배치, confidence threshold와 budget을 workload별로 자동 설정하는 튜닝 문제의 직접적인 기반이다.",
-          "url": "https://dl.acm.org/toc/PACMMOD/2025/3/4",
-          "source_url": "https://2026.sigmod.org/sigmod_papers.shtml"
+          "date": "2026",
+          "type": "Research Paper",
+          "summary": "비정형 데이터 처리 작업을 비용과 정확도가 다른 여러 단계의 cascade로 구성해 전체 실행 비용을 줄이는 시스템을 다룬다.",
+          "relevance": "단계 수, 모델 배치, confidence threshold와 budget을 workload별로 자동 설정하는 튜닝 문제의 직접적인 기반이다.",
+          "url": "https://dl.acm.org/toc/PACMMOD/2025/3/4"
         }
       ]
     },
     {
       "id": "llm-db-automation",
-      "rank": 5,
       "title": "LLM 기반 DB Testing, Code Synthesis와 Tuning Automation",
-      "category": "LLM for DBMS",
-      "tags": [
+      "subtitle": "LLM+DB 연구가 text-to-SQL을 넘어 test oracle 생성, 버그 재현, native function 구현, query rewrite와 tuning history 활용 등 DBMS 개발·운영 자동화로 이동한다.",
+      "cluster": "Reliability",
+      "domains": [
+        "Database",
+        "AI",
+        "Testing"
+      ],
+      "status": "유망",
+      "scores": {
+        "hotness": 5,
+        "fit": 5,
+        "novelty": 3,
+        "difficulty": 3,
+        "paperability": 4
+      },
+      "oneLine": "LLM이 생성한 knob relation, configuration rule, tuning warm-start 후보를 실제 workload 로그와 실행 실험으로 검증하고 신뢰도를 갱신하는 self-verifying tuner.",
+      "whyNow": "LLM이 결과를 직접 확정하기보다 후보 변환이나 규칙을 만들고 DBMS 실행, differential testing, verifier가 이를 검증하는 생성-검증 구조가 중심이 된다. DBMS 내부 작업은 정확한 정답 데이터가 부족하지만 실행 가능한 코드와 SQL은 실제 시스템에서 검증할 수 있어 LLM과 execution feedback의 결합 효과가 크다.",
+      "researchQuestions": [
+        "LLM이 생성한 DB rule과 code를 실행 기반으로 안전하게 검증할 수 있는가?",
+        "잘못된 knob relation이나 query rewrite를 자동으로 제거할 수 있는가?",
+        "과거 tuning·bug history를 새로운 workload에 얼마나 전이할 수 있는가?",
+        "생성 다양성과 false positive를 동시에 통제할 수 있는가?"
+      ],
+      "starter": "MySQL/PostgreSQL 문서에서 LLM이 knob 관계를 생성하게 한 뒤 과거 tuning 로그에서 관계 성립률을 측정하고 문서 기반, LLM 기반, 실행 검증 기반 relation graph를 비교한다.",
+      "risk": "LLM이 만든 결과의 false positive가 높을 수 있으므로 실행 검증과 안전성 평가가 시스템 기여의 중심이 되어야 합니다.",
+      "signals": [
         "LLM4DB",
         "DB-testing",
         "test-oracle",
         "query-rewrite",
         "code-synthesis"
       ],
-      "status": "watch",
-      "summary": "LLM+DB 연구가 text-to-SQL을 넘어 test oracle 생성, 버그 재현, native function 구현, query rewrite와 tuning history 활용 등 DBMS 개발·운영 자동화로 이동한다.",
-      "key_change": "LLM이 결과를 직접 확정하기보다 후보 변환이나 규칙을 만들고 DBMS 실행, differential testing, verifier가 이를 검증하는 생성-검증 구조가 중심이 된다.",
-      "why_now": "DBMS 내부 작업은 정확한 정답 데이터가 부족하지만 실행 가능한 코드와 SQL은 실제 시스템에서 검증할 수 있어 LLM과 execution feedback의 결합 효과가 크다.",
-      "research_direction": "LLM이 생성한 knob relation, configuration rule, tuning warm-start 후보를 실제 workload 로그와 실행 실험으로 검증하고 신뢰도를 갱신하는 self-verifying tuner.",
-      "smallest_experiment": "MySQL/PostgreSQL 문서에서 LLM이 knob 관계를 생성하게 한 뒤 과거 tuning 로그에서 관계 성립률을 측정하고 문서 기반, LLM 기반, 실행 검증 기반 relation graph를 비교한다.",
-      "scores": {
-        "hotness": 5,
-        "novelty_to_user": 3,
-        "experience_fit": 5,
-        "entry_difficulty": 3,
-        "publication_potential": 4
-      },
+      "keywords": [
+        "LLM4DB",
+        "DB-testing",
+        "test-oracle",
+        "query-rewrite",
+        "code-synthesis"
+      ],
+      "sources": [
+        {
+          "label": "Automated Discovery of Test Oracles for Database Management Systems Using LLMs 원문",
+          "url": "https://dl.acm.org/toc/PACMMOD/2026/4/3"
+        },
+        {
+          "label": "관련 공식 출처",
+          "url": "https://2026.sigmod.org/sigmod_papers.shtml"
+        }
+      ],
       "papers": [
         {
           "title": "Automated Discovery of Test Oracles for Database Management Systems Using LLMs",
           "venue": "SIGMOD / PACMMOD 2026",
-          "year": 2026,
-          "summary_ko": "DBMS 테스트에서 결과의 정오를 판정하기 어려운 oracle 문제를 해결하기 위해 LLM으로 검증 관계와 테스트 규칙을 자동 발견한다.",
-          "why_relevant": "LLM의 제안을 실제 DB 실행으로 검증하는 구조가 knob relation 검증 및 안전한 자동 튜닝에 그대로 적용될 수 있다.",
-          "url": "https://dl.acm.org/toc/PACMMOD/2026/4/3",
-          "source_url": "https://2026.sigmod.org/sigmod_papers.shtml"
+          "date": "2026",
+          "type": "Research Paper",
+          "summary": "DBMS 테스트에서 결과의 정오를 판정하기 어려운 oracle 문제를 해결하기 위해 LLM으로 검증 관계와 테스트 규칙을 자동 발견한다.",
+          "relevance": "LLM의 제안을 실제 DB 실행으로 검증하는 구조가 knob relation 검증 및 안전한 자동 튜닝에 그대로 적용될 수 있다.",
+          "url": "https://dl.acm.org/toc/PACMMOD/2026/4/3"
         },
         {
           "title": "Automating Database-Native Function Code Synthesis with LLMs",
           "venue": "SIGMOD / PACMMOD 2026",
-          "year": 2026,
-          "summary_ko": "LLM을 이용해 DBMS 내부에서 실행되는 native function 코드를 자동 합성하고 시스템 수준의 요구사항과 실행 결과를 반영한다.",
-          "why_relevant": "LLM이 단순 SQL 문장이 아니라 DBMS 내부 구현과 최적화 코드까지 생성하는 방향을 보여준다.",
-          "url": "https://dl.acm.org/toc/PACMMOD/2026/4/3",
-          "source_url": "https://2026.sigmod.org/sigmod_papers.shtml"
+          "date": "2026",
+          "type": "Research Paper",
+          "summary": "LLM을 이용해 DBMS 내부에서 실행되는 native function 코드를 자동 합성하고 시스템 수준의 요구사항과 실행 결과를 반영한다.",
+          "relevance": "LLM이 단순 SQL 문장이 아니라 DBMS 내부 구현과 최적화 코드까지 생성하는 방향을 보여준다.",
+          "url": "https://dl.acm.org/toc/PACMMOD/2026/4/3"
         },
         {
           "title": "GenRewrite: Query Rewriting via Large Language Models",
           "venue": "SIGMOD / PACMMOD 2026",
-          "year": 2026,
-          "summary_ko": "LLM이 의미적으로 동등하면서 더 효율적인 query rewrite 후보를 생성하고 실행 기반 평가와 결합하는 방식이다.",
-          "why_relevant": "configuration뿐 아니라 query 및 workload 자체를 변형해 시스템 성능을 높이는 representation-aware tuning 관점으로 확장할 수 있다.",
-          "url": "https://dl.acm.org/toc/PACMMOD/2026/4/3",
-          "source_url": "https://2026.sigmod.org/sigmod_papers.shtml"
+          "date": "2026",
+          "type": "Research Paper",
+          "summary": "LLM이 의미적으로 동등하면서 더 효율적인 query rewrite 후보를 생성하고 실행 기반 평가와 결합하는 방식이다.",
+          "relevance": "configuration뿐 아니라 query 및 workload 자체를 변형해 시스템 성능을 높이는 representation-aware tuning 관점으로 확장할 수 있다.",
+          "url": "https://dl.acm.org/toc/PACMMOD/2026/4/3"
         },
         {
           "title": "DBugScribe: Automatic Database Bug Reproduction from Community Reports",
           "venue": "SIGMOD / PACMMOD 2026",
-          "year": 2026,
-          "summary_ko": "자연어로 작성된 커뮤니티 버그 보고서에서 재현 가능한 DB 환경과 실행 단계를 자동 생성하는 시스템이다.",
-          "why_relevant": "튜닝 실패나 성능 regression 보고서를 자동으로 재현해 원인을 분리하는 실험 시스템 연구와 연결된다.",
-          "url": "https://dl.acm.org/toc/PACMMOD/2026/4/3",
-          "source_url": "https://2026.sigmod.org/sigmod_papers.shtml"
+          "date": "2026",
+          "type": "Research Paper",
+          "summary": "자연어로 작성된 커뮤니티 버그 보고서에서 재현 가능한 DB 환경과 실행 단계를 자동 생성하는 시스템이다.",
+          "relevance": "튜닝 실패나 성능 regression 보고서를 자동으로 재현해 원인을 분리하는 실험 시스템 연구와 연결된다.",
+          "url": "https://dl.acm.org/toc/PACMMOD/2026/4/3"
         }
       ]
     },
     {
       "id": "llm-serving-reuse",
-      "rank": 6,
       "title": "Prefix, KV Cache와 Agent-Aware LLM Serving",
-      "category": "ML Systems",
-      "tags": [
+      "subtitle": "LLM serving의 핵심 병목이 모델 압축만이 아니라 반복되는 system prompt와 agent context의 prefix 공유, KV cache 관리, batching과 request scheduling으로 이동하고 있다.",
+      "cluster": "ML Systems",
+      "domains": [
+        "ML Systems",
+        "Systems",
+        "AI"
+      ],
+      "status": "탐색적 도전",
+      "scores": {
+        "hotness": 5,
+        "fit": 3,
+        "novelty": 5,
+        "difficulty": 5,
+        "paperability": 4
+      },
+      "oneLine": "agent workflow의 공통 prefix, dependency graph와 예상 재사용성을 기반으로 request batching과 KV cache eviction을 공동 최적화한다.",
+      "whyNow": "여러 요청을 독립 실행하는 방식에서 공통 prefix와 intermediate state를 데이터 시스템의 cache 및 shared computation처럼 관리하는 방향으로 발전한다. agent workload는 동일 schema, tool description, system prompt를 반복 사용하므로 cache hit와 batching policy가 TTFT, throughput, GPU memory를 크게 좌우한다.",
+      "researchQuestions": [
+        "Agent workflow의 미래 prefix 재사용을 예측할 수 있는가?",
+        "Prefix hotness와 request dependency를 함께 고려한 batching이 가능한가?",
+        "KV cache eviction과 request scheduling을 공동 최적화할 수 있는가?",
+        "Throughput, TTFT, fairness를 동시에 만족하는 정책을 만들 수 있는가?"
+      ],
+      "starter": "동일 DB schema와 tool prompt를 공유하는 요청을 생성하고 FIFO, prefix-length batching, cache-hit-aware scheduling의 TTFT, throughput, memory, fairness를 비교한다.",
+      "risk": "GPU 환경과 강한 serving baseline이 필요하며 단순 heuristic 개선만으로는 충분한 novelty를 확보하기 어렵습니다.",
+      "signals": [
         "LLM-serving",
         "KV-cache",
         "prefix-sharing",
         "batching",
         "scheduling"
       ],
-      "status": "exploratory",
-      "summary": "LLM serving의 핵심 병목이 모델 압축만이 아니라 반복되는 system prompt와 agent context의 prefix 공유, KV cache 관리, batching과 request scheduling으로 이동하고 있다.",
-      "key_change": "여러 요청을 독립 실행하는 방식에서 공통 prefix와 intermediate state를 데이터 시스템의 cache 및 shared computation처럼 관리하는 방향으로 발전한다.",
-      "why_now": "agent workload는 동일 schema, tool description, system prompt를 반복 사용하므로 cache hit와 batching policy가 TTFT, throughput, GPU memory를 크게 좌우한다.",
-      "research_direction": "agent workflow의 공통 prefix, dependency graph와 예상 재사용성을 기반으로 request batching과 KV cache eviction을 공동 최적화한다.",
-      "smallest_experiment": "동일 DB schema와 tool prompt를 공유하는 요청을 생성하고 FIFO, prefix-length batching, cache-hit-aware scheduling의 TTFT, throughput, memory, fairness를 비교한다.",
-      "scores": {
-        "hotness": 5,
-        "novelty_to_user": 5,
-        "experience_fit": 3,
-        "entry_difficulty": 5,
-        "publication_potential": 4
-      },
+      "keywords": [
+        "LLM-serving",
+        "KV-cache",
+        "prefix-sharing",
+        "batching",
+        "scheduling"
+      ],
+      "sources": [
+        {
+          "label": "AlignedServe: Orchestrating Prefix-aware Batching to Build a High-throughput and Computing-efficient LLM Serving System 원문",
+          "url": "https://dl.acm.org/toc/PACMMOD/2026/4/3"
+        },
+        {
+          "label": "관련 공식 출처",
+          "url": "https://2026.sigmod.org/sigmod_papers.shtml"
+        },
+        {
+          "label": "HotPrefix: Hotness-Aware KV Cache Scheduling for Efficient Prefix Sharing in LLM Inference Systems 원문",
+          "url": "https://dl.acm.org/toc/PACMMOD/2025/3/4"
+        }
+      ],
       "papers": [
         {
           "title": "AlignedServe: Orchestrating Prefix-aware Batching to Build a High-throughput and Computing-efficient LLM Serving System",
           "venue": "SIGMOD / PACMMOD 2026",
-          "year": 2026,
-          "summary_ko": "공통 prefix를 가진 요청을 인지해 batching 순서와 실행을 조정함으로써 LLM serving의 처리량과 계산 효율을 높인다.",
-          "why_relevant": "agent와 RAG 요청의 반복 context를 buffer reuse 문제로 다루며 DB scheduling 경험을 적용하기 좋다.",
-          "url": "https://dl.acm.org/toc/PACMMOD/2026/4/3",
-          "source_url": "https://2026.sigmod.org/sigmod_papers.shtml"
+          "date": "2026",
+          "type": "Research Paper",
+          "summary": "공통 prefix를 가진 요청을 인지해 batching 순서와 실행을 조정함으로써 LLM serving의 처리량과 계산 효율을 높인다.",
+          "relevance": "agent와 RAG 요청의 반복 context를 buffer reuse 문제로 다루며 DB scheduling 경험을 적용하기 좋다.",
+          "url": "https://dl.acm.org/toc/PACMMOD/2026/4/3"
         },
         {
           "title": "CoDec: Prefix-Shared Decoding Kernel for LLMs",
           "venue": "SIGMOD / PACMMOD 2026",
-          "year": 2026,
-          "summary_ko": "여러 LLM 요청이 공유하는 prefix 구간의 decoding 연산을 kernel 수준에서 공동 처리해 중복 계산을 줄인다.",
-          "why_relevant": "공통 부분식 제거와 shared execution이라는 전통적 DB 최적화 개념을 LLM decoding에 적용한 사례다.",
-          "url": "https://dl.acm.org/toc/PACMMOD/2026/4/3",
-          "source_url": "https://2026.sigmod.org/sigmod_papers.shtml"
+          "date": "2026",
+          "type": "Research Paper",
+          "summary": "여러 LLM 요청이 공유하는 prefix 구간의 decoding 연산을 kernel 수준에서 공동 처리해 중복 계산을 줄인다.",
+          "relevance": "공통 부분식 제거와 shared execution이라는 전통적 DB 최적화 개념을 LLM decoding에 적용한 사례다.",
+          "url": "https://dl.acm.org/toc/PACMMOD/2026/4/3"
         },
         {
           "title": "HotPrefix: Hotness-Aware KV Cache Scheduling for Efficient Prefix Sharing in LLM Inference Systems",
           "venue": "SIGMOD / PACMMOD 2026",
-          "year": 2026,
-          "summary_ko": "prefix의 재사용 빈도와 hotness를 고려해 KV cache를 스케줄링하고 반복 요청의 inference 효율을 높인다.",
-          "why_relevant": "DB buffer manager의 hot-page 관리와 매우 유사하여 cache benefit estimation 및 workload-aware tuning 경험을 활용할 수 있다.",
-          "url": "https://dl.acm.org/toc/PACMMOD/2025/3/4",
-          "source_url": "https://2026.sigmod.org/sigmod_papers.shtml"
+          "date": "2026",
+          "type": "Research Paper",
+          "summary": "prefix의 재사용 빈도와 hotness를 고려해 KV cache를 스케줄링하고 반복 요청의 inference 효율을 높인다.",
+          "relevance": "DB buffer manager의 hot-page 관리와 매우 유사하여 cache benefit estimation 및 workload-aware tuning 경험을 활용할 수 있다.",
+          "url": "https://dl.acm.org/toc/PACMMOD/2025/3/4"
         },
         {
           "title": "DepCache: A KV Cache Management Framework for GraphRAG with Dependency Attention",
           "venue": "SIGMOD / PACMMOD 2026",
-          "year": 2026,
-          "summary_ko": "GraphRAG의 의존 관계와 attention 구조를 활용해 어떤 KV cache를 유지하고 재사용할지를 결정하는 관리 프레임워크다.",
-          "why_relevant": "RAG graph 구조와 cache policy를 연결하므로 vector retrieval, agent workflow, serving 시스템을 함께 연구할 수 있다.",
-          "url": "https://dl.acm.org/toc/PACMMOD/2026/4/3",
-          "source_url": "https://2026.sigmod.org/sigmod_papers.shtml"
+          "date": "2026",
+          "type": "Research Paper",
+          "summary": "GraphRAG의 의존 관계와 attention 구조를 활용해 어떤 KV cache를 유지하고 재사용할지를 결정하는 관리 프레임워크다.",
+          "relevance": "RAG graph 구조와 cache policy를 연결하므로 vector retrieval, agent workflow, serving 시스템을 함께 연구할 수 있다.",
+          "url": "https://dl.acm.org/toc/PACMMOD/2026/4/3"
         }
       ]
     },
     {
       "id": "pim-near-memory-ai",
-      "rank": 7,
       "title": "PIM 및 Near-Memory AI Data Pipelines",
-      "category": "Hardware-Software Co-design",
-      "tags": [
+      "subtitle": "PIM 연구를 단순한 거리 계산 가속기가 아니라 selection, distance, top-k, aggregation을 포함한 전체 데이터 파이프라인의 배치 및 데이터 이동 최적화 문제로 보는 방향이다.",
+      "cluster": "PIM & Architecture",
+      "domains": [
+        "Systems",
+        "Database",
+        "Hardware"
+      ],
+      "status": "탐색적 도전",
+      "scores": {
+        "hotness": 4,
+        "fit": 4,
+        "novelty": 5,
+        "difficulty": 5,
+        "paperability": 4
+      },
+      "oneLine": "filter→distance→partial top-k를 PIM에서 실행하고 CPU가 graph control과 global merge를 담당하는 heterogeneous vector query planner.",
+      "whyNow": "단일 kernel offload의 속도 향상보다 CPU와 PIM 사이의 역할 분담, 데이터 layout, 통신 제한, 복수 operator fusion이 핵심이 된다. 벡터 검색과 AI query는 메모리 bandwidth와 데이터 이동 비용이 크며, PIM은 대량의 독립적 filter·distance 연산에 적합하지만 host aggregation 및 불규칙 graph traversal은 여전히 어렵다.",
+      "researchQuestions": [
+        "어떤 DB operator 조합을 PIM으로 이동해야 데이터 이동을 가장 크게 줄일 수 있는가?",
+        "CPU와 PIM 사이의 graph control, distance 계산, top-k 병합 역할을 어떻게 나눌 것인가?",
+        "Filter, distance, local top-k를 fusion했을 때 이득과 제약은 무엇인가?",
+        "실제 PIM 하드웨어 없이도 신뢰할 수 있는 cost model과 prototype을 만들 수 있는가?"
+      ],
+      "starter": "실제 PIM 없이 cost model 또는 CPU prototype으로 vector-only, filter+vector, filter+vector+local-top-k offload의 이동량과 latency를 비교한다.",
+      "risk": "하드웨어 접근성과 simulator 정확도가 병목이며 CPU-PIM 통신 비용을 과소평가하면 결론이 왜곡될 수 있습니다.",
+      "signals": [
         "PIM",
         "near-memory",
         "UPMEM",
         "vector-search",
         "operator-offloading"
       ],
-      "status": "exploratory",
-      "summary": "PIM 연구를 단순한 거리 계산 가속기가 아니라 selection, distance, top-k, aggregation을 포함한 전체 데이터 파이프라인의 배치 및 데이터 이동 최적화 문제로 보는 방향이다.",
-      "key_change": "단일 kernel offload의 속도 향상보다 CPU와 PIM 사이의 역할 분담, 데이터 layout, 통신 제한, 복수 operator fusion이 핵심이 된다.",
-      "why_now": "벡터 검색과 AI query는 메모리 bandwidth와 데이터 이동 비용이 크며, PIM은 대량의 독립적 filter·distance 연산에 적합하지만 host aggregation 및 불규칙 graph traversal은 여전히 어렵다.",
-      "research_direction": "filter→distance→partial top-k를 PIM에서 실행하고 CPU가 graph control과 global merge를 담당하는 heterogeneous vector query planner.",
-      "smallest_experiment": "실제 PIM 없이 cost model 또는 CPU prototype으로 vector-only, filter+vector, filter+vector+local-top-k offload의 이동량과 latency를 비교한다.",
-      "scores": {
-        "hotness": 4,
-        "novelty_to_user": 5,
-        "experience_fit": 4,
-        "entry_difficulty": 5,
-        "publication_potential": 4
-      },
+      "keywords": [
+        "PIM",
+        "near-memory",
+        "UPMEM",
+        "vector-search",
+        "operator-offloading"
+      ],
+      "sources": [
+        {
+          "label": "PIMDAL: Mitigating the Memory Bottleneck in Data Analytics using a Real Processing-in-Memory System 원문",
+          "url": "https://arxiv.org/abs/2504.01948"
+        },
+        {
+          "label": "관련 공식 출처",
+          "url": "https://github.com/CMU-SAFARI/PIMDAL"
+        },
+        {
+          "label": "pHNSW: PCA-Based Filtering to Accelerate HNSW Approximate Nearest Neighbor Search 원문",
+          "url": "https://arxiv.org/abs/2602.19242"
+        },
+        {
+          "label": "관련 공식 출처",
+          "url": "https://arxiv.org/html/2602.19242v1"
+        },
+        {
+          "label": "CMANNS: GPU-Accelerated Graph Index Construction for ANNS via Compute–Memory Disaggregation 원문",
+          "url": "https://dl.acm.org/toc/PACMMOD/2026/4/3"
+        },
+        {
+          "label": "관련 공식 출처",
+          "url": "https://2026.sigmod.org/sigmod_papers.shtml"
+        },
+        {
+          "label": "DARTH: Declarative Recall Through Early Termination for Approximate Nearest Neighbor Search 원문",
+          "url": "https://dl.acm.org/toc/PACMMOD/2025/3/4"
+        }
+      ],
       "papers": [
         {
           "title": "PIMDAL: Mitigating the Memory Bottleneck in Data Analytics using a Real Processing-in-Memory System",
           "venue": "arXiv 2025 / UPMEM PIM study",
-          "year": 2025,
-          "summary_ko": "실제 UPMEM PIM 시스템에서 selection, aggregation, ordering, join과 TPC-H 질의를 구현하고 CPU·GPU와 비교하며 PIM의 연산, 메모리 관리, DPU 통신 제약을 분석한다.",
-          "why_relevant": "PIM에서 어떤 DB operator가 효과적인지와 host-DPU 역할 분담을 구체적으로 보여주는 가장 직접적인 기반 연구다.",
-          "url": "https://arxiv.org/abs/2504.01948",
-          "source_url": "https://github.com/CMU-SAFARI/PIMDAL"
+          "date": "2025",
+          "type": "Research Paper",
+          "summary": "실제 UPMEM PIM 시스템에서 selection, aggregation, ordering, join과 TPC-H 질의를 구현하고 CPU·GPU와 비교하며 PIM의 연산, 메모리 관리, DPU 통신 제약을 분석한다.",
+          "relevance": "PIM에서 어떤 DB operator가 효과적인지와 host-DPU 역할 분담을 구체적으로 보여주는 가장 직접적인 기반 연구다.",
+          "url": "https://arxiv.org/abs/2504.01948"
         },
         {
           "title": "pHNSW: PCA-Based Filtering to Accelerate HNSW Approximate Nearest Neighbor Search",
           "venue": "arXiv 2026",
-          "year": 2026,
-          "summary_ko": "PCA 기반 저차원 필터링으로 HNSW의 고차원 벡터 접근과 거리 계산을 줄이고 전용 프로세서 설계와 결합한 algorithm-hardware co-design이다.",
-          "why_relevant": "AdaTune의 representation refinement 및 dual-granularity vector fetch와 하드웨어 가속을 연결할 수 있는 최신 인접 연구다.",
-          "url": "https://arxiv.org/abs/2602.19242",
-          "source_url": "https://arxiv.org/html/2602.19242v1"
+          "date": "2026",
+          "type": "Research Paper",
+          "summary": "PCA 기반 저차원 필터링으로 HNSW의 고차원 벡터 접근과 거리 계산을 줄이고 전용 프로세서 설계와 결합한 algorithm-hardware co-design이다.",
+          "relevance": "AdaTune의 representation refinement 및 dual-granularity vector fetch와 하드웨어 가속을 연결할 수 있는 최신 인접 연구다.",
+          "url": "https://arxiv.org/abs/2602.19242"
         },
         {
           "title": "CMANNS: GPU-Accelerated Graph Index Construction for ANNS via Compute–Memory Disaggregation",
           "venue": "SIGMOD / PACMMOD 2026",
-          "year": 2026,
-          "summary_ko": "ANN graph index 구축에서 계산 자원과 메모리를 분리하고 GPU 가속을 결합해 대규모 구축 비용을 줄이는 시스템이다.",
-          "why_relevant": "PIM 자체는 아니지만 compute-memory disaggregation과 데이터 이동을 중심으로 ANN 시스템을 설계한다는 점에서 가까운 비교 대상이다.",
-          "url": "https://dl.acm.org/toc/PACMMOD/2026/4/3",
-          "source_url": "https://2026.sigmod.org/sigmod_papers.shtml"
+          "date": "2026",
+          "type": "Research Paper",
+          "summary": "ANN graph index 구축에서 계산 자원과 메모리를 분리하고 GPU 가속을 결합해 대규모 구축 비용을 줄이는 시스템이다.",
+          "relevance": "PIM 자체는 아니지만 compute-memory disaggregation과 데이터 이동을 중심으로 ANN 시스템을 설계한다는 점에서 가까운 비교 대상이다.",
+          "url": "https://dl.acm.org/toc/PACMMOD/2026/4/3"
         },
         {
           "title": "DARTH: Declarative Recall Through Early Termination for Approximate Nearest Neighbor Search",
           "venue": "SIGMOD / PACMMOD 2026",
-          "year": 2026,
-          "summary_ko": "ANN 검색에서 recall 요구를 선언적으로 다루고 불필요한 벡터 접근과 거리 계산을 조기에 종료하여 검색 비용을 줄인다.",
-          "why_relevant": "PIM에서 데이터 이동과 연산을 줄이는 핵심 수단인 early termination 및 데이터 layout 최적화와 직접 연결된다.",
-          "url": "https://dl.acm.org/toc/PACMMOD/2025/3/4",
-          "source_url": "https://2026.sigmod.org/sigmod_papers.shtml"
+          "date": "2026",
+          "type": "Research Paper",
+          "summary": "ANN 검색에서 recall 요구를 선언적으로 다루고 불필요한 벡터 접근과 거리 계산을 조기에 종료하여 검색 비용을 줄인다.",
+          "relevance": "PIM에서 데이터 이동과 연산을 줄이는 핵심 수단인 early termination 및 데이터 layout 최적화와 직접 연결된다.",
+          "url": "https://dl.acm.org/toc/PACMMOD/2025/3/4"
         }
       ]
-    }
-  ],
-  "top_3": [
-    {
-      "topic_id": "filtered-vector-search",
-      "reason": "최근 읽은 ACORN과 Filtered-DiskANN, AdaTune의 hardness 및 index selection을 가장 직접적으로 결합할 수 있고 DBMS optimizer 관점의 차별화가 가능하다."
-    },
-    {
-      "topic_id": "drift-aware-tuning",
-      "reason": "AdaTune의 정적 workload 가정을 자연스럽게 확장하며 기존 실험 인프라와 알고리즘을 대부분 재사용할 수 있어 빠른 첫 결과가 가능하다."
-    },
-    {
-      "topic_id": "agentic-data-management",
-      "reason": "기존 recall-constrained tuning을 task-success-constrained workflow tuning으로 옮길 수 있어 새 연구 영역으로 확장하면서도 최적화 경험을 유지할 수 있다."
     }
   ]
 }
